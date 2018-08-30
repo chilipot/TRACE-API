@@ -3,6 +3,8 @@ from collections import OrderedDict
 import json
 import authentication as auth
 from os import listdir
+from multiprocessing import Pool
+
 
 def initialize_sheet(file):
     workbook = xlrd.open_workbook(file)
@@ -37,12 +39,12 @@ def collect_stats(sh):
         data['Question-ID'] = row_values[0]
         data['Question Abbrev'] = row_values[1]
         data['Question Text'] = row_values[2]
-        data['Strongly Agree (5)'] = row_values[3]
-        data['Agree (4)'] = row_values[4]
-        data['Neutral (3)'] = row_values[5]
-        data['Disagree (2)'] = row_values[6]
-        data['Strongly Disagree (1)'] = row_values[7]
-        data['Not (-1)'] = row_values[8]
+        data['Strongly Agree (5.0)'] = row_values[3]
+        data['Agree (4.0)'] = row_values[4]
+        data['Neutral (3.0)'] = row_values[5]
+        data['Disagree (2.0)'] = row_values[6]
+        data['Strongly Disagree (1.0)'] = row_values[7]
+        data['Not (-1.0)'] = row_values[8]
         data['Mean'] = row_values[9]
         data['Median'] = row_values[10]
         data['Std Dev'] = row_values[11]
@@ -50,7 +52,7 @@ def collect_stats(sh):
         data['Response Rate'] = row_values[13]
 
         stats.append(data)
-        
+
     return stats
 
 
@@ -60,11 +62,11 @@ def overall_stats(sh):
     data['Question-ID'] = row_values[0]
     data['Question Abbrev'] = row_values[1]
     data['Question Text'] = row_values[2]
-    data['Almost Always Effective (5)'] = row_values[3]
-    data['Usually Effective (4)'] = row_values[4]
-    data['Sometimes Effective (3)'] = row_values[5]
-    data['Rarely Effective (2)'] = row_values[6]
-    data['Never Effective (1)'] = row_values[7]
+    data['Almost Always Effective (5.0)'] = row_values[3]
+    data['Usually Effective (4.0)'] = row_values[4]
+    data['Sometimes Effective (3.0)'] = row_values[5]
+    data['Rarely Effective (2.0)'] = row_values[6]
+    data['Never Effective (1.0)'] = row_values[7]
     data['Mean'] = row_values[8]
     data['Median'] = row_values[9]
     data['Std Dev'] = row_values[10]
@@ -92,7 +94,7 @@ def hours_spent(sh):
 
 def create_json(lst):
     j = json.dumps(lst)
-    #print(j)
+    # print(j)
     with open('data.json', 'w') as f:
         f.write(j)
 
@@ -102,28 +104,35 @@ def create_json(lst):
 def get_single_scores(name):
     data_list = []
     s = initialize_sheet(name)
-    #data = get_course(s)
-    #data_list.append(data)
+    # data = get_course(s)
+    # data_list.append(data)
     data_list += get_course(s)
-    #stats = collect_stats(s)
-    #data_list.append(stats)
-    data_list += collect_stats(s) # flattens info list
+    # stats = collect_stats(s)
+    # data_list.append(stats)
+    data_list += collect_stats(s)  # flattens info list
     overall = overall_stats(s)
     data_list.append(overall)
     hours = hours_spent(s)
     data_list.append(hours)
-    return data_list    
+    return data_list
+
 
 def all_xls_names():
     dl_path = auth.load_settings()['Download']
     filenames = listdir(dl_path)
-    return [filename for filename in filenames if filename.endswith('.xls')]
+    return [filename.replace(filename, dl_path + "\\" + filename) for filename
+            in filenames if filename.endswith('.xls')]
+
 
 def get_all_scores():
     xls_names = all_xls_names()
-    dl_path = auth.load_settings()['Download']
-    all_scores = [get_single_scores(dl_path + "\\" + xls_name) for xls_name in xls_names]
+    p = Pool(4)
+    all_scores = p.map(get_single_scores, xls_names)
+    p.close()
+    p.join()
+    # all_scores = [get_single_scores(xls_name) for xls_name in xls_names]
     return all_scores
-    
+
+
 if __name__ == "__main__":
     print(get_all_scores())
