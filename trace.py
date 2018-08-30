@@ -52,8 +52,7 @@ def report_info_data(driver, termID, count=26270):
     driver.set_page_load_timeout(7200)
     #Get All Reports For A Term (Use this Info to Search for Report Data)
 
-        # driver.get("https://www.applyweb.com/eval/new/reportbrowser/evaluatedCourses?excludeTA=false&page=1&rpp=" + str(count) + "&termId=" + str(termID))
-    driver.get("https://www.applyweb.com/eval/new/reportbrowser/evaluatedCourses?excludeTA=false&page=1&rpp=26270&termId=0")
+    driver.get("https://www.applyweb.com/eval/new/reportbrowser/evaluatedCourses?excludeTA=false&page=1&rpp=" + str(count) + "&termId=" + str(termID))
 
     time.sleep(15)
     print("Links Loaded")
@@ -126,11 +125,11 @@ def get_all_reports():
     print("No_Scores")
     reports_noScores = get_reports_noScores(data)
     download_all_scores(driver, reports_noScores)
-    # scores = jsonprep.get_all_scores()
-    # reports = include_scores(reports_noScores, scores)
-    # j = json.dumps(reports, cls=cje.ComplexEncoder)
-    # with open('full_data.json', 'w') as f:
-    #     f.write(j)
+    scores = jsonprep.get_all_scores()
+    reports = include_scores(reports_noScores, scores)
+    j = json.dumps(reports, cls=cje.ComplexEncoder)
+    with open('full_data.json', 'w') as f:
+        f.write(j)
 
     return reports
 
