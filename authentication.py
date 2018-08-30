@@ -5,6 +5,7 @@ as well as "authenticate" with TRACE by logging in/opening it
 
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium import webdriver
 import configparser
 
@@ -35,7 +36,9 @@ def initialize_chrome(conf):
         'safebrowsing.disable_download_protection': True
     }
     options.add_experimental_option('prefs', prefs)
-    driver = webdriver.Chrome(executable_path=r"chromedriver.exe",chrome_options=options)
+    capa = DesiredCapabilities.CHROME
+    capa["pageLoadStrategy"] = "normal"
+    driver = webdriver.Chrome(executable_path=r"chromedriver.exe",chrome_options=options, desired_capabilities=capa)
 
     driver.command_executor._commands["send_command"] = (
         "POST", '/session/$sessionId/chromium/send_command')
@@ -73,7 +76,7 @@ def auth():
     driver = CAS_authentification(config, driver)
     confirm_login(driver)
     driver = open_TRACE(driver)
-    
+
     return driver
 
 if __name__ == "__main__":
