@@ -10,7 +10,6 @@ from collections import OrderedDict
 import jsonprep
 import complex_json_encoder as cje
 import time
-from multiprocess import Process, Pool
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -97,7 +96,8 @@ def match_report_score(report, score):
     score_course = score[0]['Course']
     score_term = score[0]['Term']
 
-    report_inst = " ".join(list(filter(None.__ne__, [report.instructor.firstName, report.instructor.middleName, report.instructor.lastName])))
+    #report_inst = " ".join(list(filter(None.__ne__, [report.instructor.firstName, report.instructor.middleName, report.instructor.lastName])))
+    report_inst = " ".join([name for name in [report.instructor.firstName, report.instructor.lastName] if name and name.strip()])
     report_term = report.term.title
     report_course = report.subject + report.number + " " + report.section + " " + report.name
 
@@ -119,12 +119,16 @@ def include_scores(reports, scores):
 # ---------------------------------------------------
 
 def get_all_reports():
-    driver = auth.auth()
+    #driver = auth.auth()
     print("Getting Links")
-    data = report_info_data(driver, 0)
+    #data = report_info_data(driver, 0)
+
+    with open('data/reports_noScores (ALL).json') as f:
+        data = json.load(f)['data']
+    
     print("No_Scores")
     reports_noScores = get_reports_noScores(data)
-    download_all_scores(driver, reports_noScores)
+    #download_all_scores(driver, reports_noScores)
     scores = jsonprep.get_all_scores()
     reports = include_scores(reports_noScores, scores)
     j = json.dumps(reports, cls=cje.ComplexEncoder)
