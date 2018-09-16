@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
-from flask_pymongo import PyMongo
-import pymongo
+from flask_pymongo import PyMongo, ObjectId
+from pymongo import cursor
 import bson.json_util as json_util
 import time
 
@@ -75,7 +75,7 @@ def get_all_reports():
 		end1 = time.time()
 		queryPointer = report.find(query, {'data' : 0})
 		queryPointer.batch_size(1000000)
-		queryPointer.cursor_type = pymongo.cursor.CursorType.EXHAUST
+		queryPointer.cursor_type = cursor.CursorType.EXHAUST
 		end2 = time.time()
 
 	output = []
@@ -96,5 +96,18 @@ def get_all_reports():
 	
 	return json_util.dumps({'result' : output})
 
+@app.route('/report/<objectID>', methods=['GET'])
+@cross_origin()
+def get_single_report(objectID):
+	params = request.args.to_dict()
+	just_score = params.get('justScore', False)
+	
+	if just_score.lower() == 'true':
+		result = db.reports.find_one({'_id' : ObjectId(objectID)}, {'_id' : 1, 'data' : 1})
+	else:
+		result = db.reports.find_one({'_id' : ObjectId(objectID)})
+		
+	return json_util.dumps({'result': result})
+	
 if __name__ == '__main__':
 	app.run(debug=True)
