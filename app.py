@@ -1,21 +1,25 @@
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request
+from flask_cors import CORS, cross_origin
 from flask_pymongo import PyMongo
 import pymongo
 import bson.json_util as json_util
 import time
 
 app = Flask(__name__)
+cors = CORS(app)
 
 username = 'readonly'
 password = 'readonly'
 
 app.config['MONGO_DBNAME'] = 'trace'
 app.config['MONGO_URI'] = 'mongodb+srv://' + username + ':' + password + '@trace-uabdw.mongodb.net/trace?retryWrites=true'
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 mongo = PyMongo(app)
 db = mongo.db;
 
 @app.route('/report', methods=['GET'])
+@cross_origin()
 def get_all_reports():
 	start = time.time()
 	report = db.reports
