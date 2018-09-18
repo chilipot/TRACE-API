@@ -55,14 +55,33 @@ function sendReport(url) {
 					'<td><a onclick=\"viewReport(\'' + report._id.$oid + '\')\">View</a></td>' +
 				'</tr>';
 			ul.innerHTML += html;
-		  ul.innerHTML += '<tr><td>' + report.data[0].Enrollment + '</tr></td>';
 			report.data.map(function(stat) {
 				console.log(stat);
-				var html = 
-					'<tr>' +
-						'<td>' + stat + '</td>'
-					'</tr>';
-				ul.innerHTML += html;
+				Object.keys(stat).map(function(key) {
+					var html = 
+						'<tr>' +
+							'<td>' + key + " : " + stat[key] + '</td>' +
+						'</tr>';
+					ul.innerHTML += html;
+				})
+//				var html = 
+//					'<tr>' +
+//						'<td>' + stat["Question-ID"] + '</td>' +
+//						'<td>' + stat["Question Abbrev"] + '</td>' +
+//						'<td>' + stat["Question Text"] + '</td>' +
+//						'<td>' + stat["Strongly Agree (5)"] + '</td>' +
+//						'<td>' + stat["Agree (4)"] + '</td>' +
+//						'<td>' + stat["Neutral (3)"] + '</td>' +
+//						'<td>' + stat["Disagree (2)"] + '</td>' +
+//						'<td>' + stat["Strongly Disagree (1)"] + '</td>' +
+//						'<td>' + stat["Not (-1)"] + '</td>' +
+//						'<td>' + stat["Mean"] + '</td>' +
+//						'<td>' + stat["Median"] + '</td>' +
+//						'<td>' + stat["Std Dev"] + '</td>' +
+//						'<td>' + stat["Response Count"] + '</td>' +
+//						'<td>' + stat["Response Rate"] + '</td>' +
+//					'</tr>';
+//				ul.innerHTML += html;
 			});
 		  })
 	  .catch(function(error) {
