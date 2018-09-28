@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.IO;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -14,6 +17,7 @@ namespace TRACE_API.Controllers
     public class ReportsController : Controller
     {
         private DB_A3CB61_TRACE_Entities db = new DB_A3CB61_TRACE_Entities();
+        private MongoService mongo = new MongoService();
 
         // GET: Reports
         [HttpGet]
@@ -81,6 +85,21 @@ namespace TRACE_API.Controllers
             }
 
             return View(results.ToPagedList(pageNumber, pageSize));
+        }
+
+        [HttpGet]
+        public ActionResult Score(int id)
+        {
+            var report = db.Reports.Find(id);
+
+            if (report == null)
+            {
+                return HttpNotFound();
+            }
+
+            var score = mongo.GetScoreDetails(report.DataID);
+
+            return Content(score.ToJson(), "application/json");
         }
     }
 }
