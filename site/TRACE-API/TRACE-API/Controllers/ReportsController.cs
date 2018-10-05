@@ -19,9 +19,15 @@ namespace TRACE_API.Controllers
         private DB_A3CB61_TRACE_Entities db = new DB_A3CB61_TRACE_Entities();
         private MongoService mongo = new MongoService();
 
+        [HttpGet]
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         // GET: Reports
         [HttpGet]
-        public ActionResult Index(int? courseID, int? instructorID, int? termID, int pageNumber = 0, int pageSize = 250, string search = "")
+        public ActionResult GetReports(int? courseID, int? instructorID, int? termID, int pageNumber = 0, int pageSize = 50, string search = "")
         {
             var reports = db.Reports.AsNoTracking().Include(r => r.Instructor).Include(r => r.Term);
 
@@ -84,7 +90,22 @@ namespace TRACE_API.Controllers
                     .ThenBy(r => (r.Instructor.FirstName + " " + r.Instructor.LastName));
             }
 
-            return View(results.ToPagedList(pageNumber, pageSize));
+            return PartialView("Results",results.ToPagedList(pageNumber, pageSize));
+        }
+
+        [HttpGet]
+        public ActionResult Data(int id)
+        {
+            var report = db.Reports.Find(id);
+
+            if (report == null)
+            {
+                return HttpNotFound();
+            }
+
+            //ViewBag.ReportID = id;
+
+            return View(report);
         }
 
         [HttpGet]

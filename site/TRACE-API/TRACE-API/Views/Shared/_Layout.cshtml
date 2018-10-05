@@ -4,33 +4,33 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
+    <link href="https://my.northeastern.edu/o/mvp-private-theme/css/main.css?browserId=other&themeId=mvpprivatetheme_WAR_mvpprivatetheme&minifierType=css&languageId=en_US&b=7010&t=1538142960463" rel="stylesheet" />
+    <link href="https://my.northeastern.edu/o/mvp-private-theme/css/aui.css?browserId=other&themeId=mvpprivatetheme_WAR_mvpprivatetheme&minifierType=css&languageId=en_US&b=7010&t=1538142960463" rel="stylesheet" />
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
-                    <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
-                </ul>
-            </div>
+    <section id="header">
+        <div class="container flex-container">
+            <div class="logo"> 
+            <h1 style="color:white; line-height: 60px; padding:0px; margin:0px;">NU TRACE</h1>
+            </div> 
+            <nav class="" id="navigation" role="navigation">
+            <div class="nav-content"> <a class="close-nav-icon ion-android-close" href="javascript:;" aria-label="Close navigation menu" data-vivaldi-spatnav-clickable="1"></a> 
+                <ul aria-label="Site Pages" class="unstyled-list flex-container"> 
+                <li class="selected" id="layout_1"> <a aria-label="Home , current page" class="primary-link" href="@Url.Action("", "Reports", "http")" data-vivaldi-spatnav-clickable="1"> Search</a> </li> 
+                <li class="" id="layout_2"> <a aria-label="Services &amp; Links " class="primary-link" href="https://www.github.com/Unix-Code/TRACE-API" data-vivaldi-spatnav-clickable="1"> API</a> </li> 
+                    </ul> 
+                </div> 
+                </nav> 
         </div>
-    </div>
+    </section>
     <div class="container body-content">
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>&copy; @DateTime.Now.Year David Malakh & Daniel Guddemi</p>
         </footer>
     </div>
 

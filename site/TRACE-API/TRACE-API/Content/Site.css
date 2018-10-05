@@ -1,17 +1,34 @@
-﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+﻿.input-group * {
+    border-color: #c00;
 }
 
-/* Set padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+.input-group-btn button {
+    border-color: #c00;
+    color: white;
+    background-color: #c00;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
+.input-group-btn button:hover {
+    border-color: #8e060c;
+    background-color: #8e060c;
+    color: white;
+}
+
+#courseInfoContent {
+    margin: 20px;
+}
+
+th {
+    background-color:rgb(247, 247, 247);
+}
+td {
+    word-wrap: break-word;
+}
+
+.ajax-loader {
+    background-image: url("Images/AjaxLoaderImg.svg");
+    background-color: #ffffff;
+    background-size: 50px 50px;
+    background-position: right center;
+    background-repeat: no-repeat;
 }

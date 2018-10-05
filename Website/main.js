@@ -95,15 +95,6 @@ function sendRequest(url) {
 				clone.querySelector('.report-term').innerText = report.term.title;
 				clone.querySelector('.report-view a').setAttribute("onclick", "viewReport('" + report._id.$oid + "')");
 				document.getElementById('searchResults').appendChild(clone);
-//				var html =
-//					'<tr>' +
-//					'<td>' + report.name + '</td>' +
-//					'<td>' + report.subject + '</td>' +
-//					'<td>' + report.instructor.lastName + ", " + report.instructor.firstName + '</td>' +
-//					'<td>' + report.term.title + '</td>' +
-//					'<td><a onclick=\"viewReport(\'' + report._id.$oid + '\')\">View</a></td>' +
-//					'</tr>';
-//				ul.innerHTML += html;
 			});
 		})
 		.catch(function (error) {
