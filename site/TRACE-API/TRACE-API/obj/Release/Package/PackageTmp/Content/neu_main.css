@@ -4414,13 +4414,13 @@ html.no-scroll {
     width: 100%
 }
 
-_:-ms-fullscreen, :root #content {
+/*_:-ms-fullscreen, :root #content {
     min-height: calc(100vh - 64px)
 }
 
 _:-ms-fullscreen, :root .wrap-text:before {
     content: inherit !important
-}
+}*/
 
 .wrap-text {
     text-overflow: ellipsis;
