@@ -1,0 +1,90 @@
+﻿@model IEnumerable<TRACE_API.Models.Report>
+
+@{
+    Layout = null;
+}
+
+@*<p>
+        @Html.ActionLink("Create New", "Create")
+    </p>*@
+<table class="table table-responsive table-striped table-hover">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Term)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Instructor)
+        </th>
+        @*<th>
+                @Html.DisplayNameFor(model => model.CourseID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Subject)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Number)
+            </th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.Section)
+        </th>
+        @*<th>
+                @Html.DisplayNameFor(model => model.DataID)
+            </th>*@
+        @*<th>
+                @Html.DisplayNameFor(model => model.Instructor.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Term.Title)
+            </th>*@
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Term.NormalizedTitle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullCourseName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Instructor.FullName)
+            </td>
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.CourseID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Subject)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Number)f
+                </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.Section)
+            </td>
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.DataID)
+                </td>*@
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.Instructor.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Term.Title)
+                </td>*@
+            <td>
+                @Html.ActionLink("View", "Data", new { id = item.ReportID }, htmlAttributes: new { })
+            </td>
+        </tr>
+    }
+
+</table>

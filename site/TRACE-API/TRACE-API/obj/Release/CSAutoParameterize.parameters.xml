@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="MongoDB-Web.config Connection String" description="MongoDB Connection String used in web.config by the application to access the database." defaultValue="mongodb://readonly:readonly@trace-shard-00-00-uabdw.mongodb.net:27017,trace-shard-00-01-uabdw.mongodb.net:27017,trace-shard-00-02-uabdw.mongodb.net:27017/test?ssl=true&amp;replicaSet=TRACE-shard-0&amp;authSource=admin&amp;retryWrites=true" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\David\\Documents\\GitHub\\TRACE-API\\site\\TRACE-API\\TRACE-API\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='MongoDB']/@connectionString" />
+  </parameter>
+  <parameter name="DB_A3CB61_TRACE_Entities-Web.config Connection String" description="DB_A3CB61_TRACE_Entities Connection String used in web.config by the application to access the database." defaultValue="metadata=res://*/Models.Reports.csdl|res://*/Models.Reports.ssdl|res://*/Models.Reports.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=sql5007.site4now.net;initial catalog=DB_A3CB61_TRACE;persist security info=True;user id=DB_A3CB61_TRACE_admin;password=jacobbillings2018;MultipleActiveResultSets=True;App=EntityFramework&quot;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\David\\Documents\\GitHub\\TRACE-API\\site\\TRACE-API\\TRACE-API\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DB_A3CB61_TRACE_Entities']/@connectionString" />
+  </parameter>
+</parameters>

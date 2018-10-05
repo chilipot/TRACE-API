@@ -159,7 +159,6 @@ C:\Users\David\Documents\GitHub\TRACE-API\site\TRACE-API\TRACE-API\bin\Microsoft
 C:\Users\David\Documents\GitHub\TRACE-API\site\TRACE-API\TRACE-API\bin\Microsoft.AI.ServerTelemetryChannel.xml
 C:\Users\David\Documents\GitHub\TRACE-API\site\TRACE-API\TRACE-API\bin\Microsoft.AI.WindowsServer.xml
 C:\Users\David\Documents\GitHub\TRACE-API\site\TRACE-API\TRACE-API\bin\Microsoft.AI.Web.xml
-C:\Users\David\Documents\GitHub\TRACE-API\site\TRACE-API\TRACE-API\obj\Debug\TRACE-API.csprojResolveAssemblyReference.cache
 C:\Users\David\Documents\GitHub\TRACE-API\site\TRACE-API\TRACE-API\obj\Debug\TRACE-API.dll
 C:\Users\David\Documents\GitHub\TRACE-API\site\TRACE-API\TRACE-API\obj\Debug\TRACE-API.pdb
 C:\Users\dangu\OneDrive\Computer Files\Documents\GitHub\TRACE-API\site\TRACE-API\TRACE-API\bin\ApplicationInsights.config

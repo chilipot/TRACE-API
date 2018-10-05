@@ -21,8 +21,14 @@ namespace TRACE_API
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/charts").Include(
+                      "~/Scripts/Chart.bundle.min.js",
+                      "~/Scripts/Chart.min.js"));
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
+                      "~/Content/neu_main.css",
+                      "~/Content/neu_aui.css",
                       "~/Content/Site.css"));
         }
     }

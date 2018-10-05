@@ -244,7 +244,11 @@
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Chart.bundle.min.js" />
+    <Content Include="Content\Chart.min.js" />
     <Content Include="Content\Images\AjaxLoaderImg.svg" />
+    <Content Include="Content\neu_aui.css" />
+    <Content Include="Content\neu_main.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -289,6 +293,7 @@
     <Content Include="Models\Reports.edmx.diagram">
       <DependentUpon>Reports.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
