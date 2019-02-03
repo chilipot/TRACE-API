@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>NU TRACE</title>
+<link rel="stylesheet" href="fundamentals.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="import" href="templates.html" id="templates">
+	<link rel="stylesheet" href="custom.css">
+</head>
+
+<body>
+<div id="navbar"></div>
+<div id="content" class="container">
+  <div class="row">
+    <div class="five columns">
+      <div class="container" id="searchBox">
+        <input id="searchInput" type="text" placeholder="Search.." name="search">
+        <a id="searchButton" onClick="sendSearch()"><i class="fa fa-search"></i></a>
+		</div>
+    </div>
+    <div class="seven columns">
+        <table class="container" id="searchResults">
+        </table>
+    </div>
+  </div>
+</div>
+<!-- Load icon library --> 
+
+<!-- The report -->
+<div class="container">
+  <table id="test">
+  </table>
+  <table id="another-one">
+  </table>
+  <table id="another-one-two">
+  </table>
+</div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="main.js"></script>
+</html>

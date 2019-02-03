@@ -1,0 +1,23 @@
+﻿<div id="wrapper">
+    @using (Html.BeginForm("Index", "Reports", FormMethod.Get))
+    {
+        <div class="form-group form-inline">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+                @Html.TextBox("Search", "Search For Report", htmlAttributes: new { @class=""})
+                <input class="btn btn-info" style="margin-left: 3px" type="submit" value="Search" />
+            </div>
+        </div>
+    }
+
+
+    <div class="row">
+        placeholder
+    </div>
+</div>
+
+@section scripts {
+    <script>
+
+    </script>
+}
