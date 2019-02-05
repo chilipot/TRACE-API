@@ -36,14 +36,14 @@ class User(db.Model):
         """
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, seconds=5),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=15),
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }
             return jwt.encode(
                 payload,
                 key,
-                algorithm='HS256'
+                algorithm='HS512'
             )
         except Exception as e:
             return e
@@ -56,7 +56,7 @@ class User(db.Model):
         :return: integer|string
         """
         try:
-            payload = jwt.decode(auth_token, key)
+            payload = jwt.decode(auth_token, key, algorithms=['HS512'])
             is_blacklisted_token = BlacklistToken.check_blacklist(auth_token)
             if is_blacklisted_token:
                 return 'Token blacklisted. Please log in again.'
