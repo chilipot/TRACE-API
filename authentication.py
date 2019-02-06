@@ -21,13 +21,14 @@ def load_settings():
         values['Download'] = config['Paths']['Download']
     if 'Other' in config:
         values['Headless'] = config['Other'].getboolean('Headless')
+    print("Settings loaded")
     return values
 
 
 def initialize_chrome(conf):
     options = Options()
-    if conf['Headless']:
-        options.add_argument("--headless")
+    # if conf['Headless']:
+        # options.add_argument("--headless")
     prefs = {
         "download.default_directory": conf['Download'],
         "download.prompt_for_download": False,
@@ -38,7 +39,7 @@ def initialize_chrome(conf):
     options.add_experimental_option('prefs', prefs)
     capa = DesiredCapabilities.CHROME
     capa["pageLoadStrategy"] = "normal"
-    driver = webdriver.Chrome(executable_path=r"chromedriver.exe",chrome_options=options, desired_capabilities=capa)
+    driver = webdriver.Chrome(executable_path=r"chromedriver.exe",options=options, desired_capabilities=capa)
 
     driver.command_executor._commands["send_command"] = (
         "POST", '/session/$sessionId/chromium/send_command')
