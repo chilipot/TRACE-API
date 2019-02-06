@@ -1,9 +1,10 @@
-import xlrd
-from collections import OrderedDict
 import json
-import authentication as auth
-from os import listdir
+import os
+from collections import OrderedDict
 from multiprocessing import Pool
+from os import listdir
+
+import xlrd
 
 
 def initialize_sheet(file):
@@ -154,7 +155,7 @@ def hours_spent(sh, ranges):
 def create_json(lst):
     j = json.dumps(lst)
     # print(j)
-    with open('data/scores.json', 'w') as f:
+    with open('../data/scores.json', 'w') as f:
         f.write(j)
 
     return j
@@ -180,7 +181,7 @@ def get_single_scores(name):
 
 
 def all_xls_names():
-    dl_path = auth.load_settings()['Download']
+    dl_path = os.getenv('DOWNLOAD', 'download')
     filenames = listdir(dl_path)
     return [filename.replace(filename, dl_path + "\\" + filename) for filename
             in filenames if filename.endswith('.xls')]
@@ -188,12 +189,10 @@ def all_xls_names():
 
 def get_all_scores():
     xls_names = all_xls_names()
-    '''
     p = Pool(4)
     all_scores = p.map(get_single_scores, xls_names)
     p.close()
     p.join()
-    '''
     all_scores = [get_single_scores(xls_name) for xls_name in xls_names]
     return all_scores
 

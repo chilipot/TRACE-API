@@ -3,34 +3,19 @@ This module contains functionality to authenticate chrome driver
 as well as "authenticate" with TRACE by logging in/opening it
 '''
 
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+import os
+
 from selenium import webdriver
-import configparser
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
-def load_settings():
-    config = configparser.ConfigParser()
-    config.read('config.ini')
-    values = {}
-    if 'CREDENTIALS' in config:
-        values['Username'] = config['CREDENTIALS']['Username']
-        values['Password'] = config['CREDENTIALS']['Password']
-    if 'Paths' in config:
-        values['Download'] = config['Paths']['Download']
-    if 'Other' in config:
-        values['Headless'] = config['Other'].getboolean('Headless')
-    print("Settings loaded")
-    return values
-
-
-def initialize_chrome(conf):
+def initialize_chrome():
     options = Options()
-    # if conf['Headless']:
-        # options.add_argument("--headless")
+    if os.getenv('HEADLESS', 'headless') == 'True':
+        options.add_argument("--headless")
     prefs = {
-        "download.default_directory": conf['Download'],
+        "download.default_directory": os.getenv('DOWNLOAD', 'download'),
         "download.prompt_for_download": False,
         "download.directory_upgrade": True,
         'safebrowsing.enabled': False,
@@ -44,17 +29,17 @@ def initialize_chrome(conf):
     driver.command_executor._commands["send_command"] = (
         "POST", '/session/$sessionId/chromium/send_command')
     params = {'cmd': 'Page.setDownloadBehavior', 'params': {
-        'behavior': 'allow', 'downloadPath': conf['Download']}}
+        'behavior': 'allow', 'downloadPath': os.getenv('DOWNLOAD', 'download')}}
     driver.execute("send_command", params)
     return driver
 
 
-def CAS_authentification(conf, driver):
+def CAS_authentification(driver):
     driver.get("https://neuidmsso.neu.edu/cas-server/login")
     usern = driver.find_element_by_id("username")
-    usern.send_keys(conf['Username'])
+    usern.send_keys(os.getenv('USERNAME', 'username'))
     passw = driver.find_element_by_id("password")
-    passw.send_keys(conf['Password'])
+    passw.send_keys(os.getenv('PASSWORD', 'password'))
     passw.submit()
     return driver
 
@@ -72,9 +57,8 @@ def open_TRACE(driver):
     return driver
 
 def auth():
-    config = load_settings()
-    driver = initialize_chrome(config)
-    driver = CAS_authentification(config, driver)
+    driver = initialize_chrome()
+    driver = CAS_authentification(driver)
     confirm_login(driver)
     driver = open_TRACE(driver)
 
