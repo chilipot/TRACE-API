@@ -3,53 +3,23 @@ This module contains functionality to download report info
 (not including any scores) and convert it to object lists
 '''
 
-import authentication as auth
 import json
-import collections
-from collections import OrderedDict
-import jsonprep
-import complex_json_encoder as cje
 import time
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
-class Instructor(cje.ComplexJSONSerializable):
-    def __init__(self, instructorID, firstName, middleName, lastName):
-        self.instructorID = instructorID
-        self.firstName = firstName
-        self.middleName = middleName
-        self.lastName = lastName
+import trace_driver
+from JSONSerializable import ComplexEncoder
+from JSONSerializable.Serializers import Instructor, Term, Report
 
-class Term(cje.ComplexJSONSerializable):
-    def __init__(self, termID, title):
-        self.termID = termID
-        self.title = title
-
-class Report(cje.ComplexJSONSerializable):
-    def __init__(self, id, instructor, term, name, subject, number, section, data):
-        self.id = id
-        self.instructor = instructor
-        self.term = term
-        self.name = name
-        self.subject = subject
-        self.number = number
-        self.section = section
-        self.data = data
+from report_collector import jsonprep
 
 
 # ---------------------------------------------------
 #            Get Report Info (No Scores)
 # ---------------------------------------------------
 
-def lazy(func):
-    try:
-        return func
-    except:
-        pass
-
 def report_info_data(driver, termID, count=26270):
     driver.set_page_load_timeout(7200)
-    #Get All Reports For A Term (Use this Info to Search for Report Data)
+    # Get All Reports For A Term (Use this Info to Search for Report Data)
 
     driver.get("https://www.applyweb.com/eval/new/reportbrowser/evaluatedCourses?excludeTA=false&page=1&rpp=" + str(count) + "&termId=" + str(termID))
 
@@ -82,7 +52,9 @@ def get_reports_noScores(data):
 def download_all_scores(driver, reports_noScores):
     print("Downloading...")
     for report in reports_noScores:
-        driver.get("https://www.applyweb.com/eval/new/showreport/excel?r=2&c=" + str(report.id) + "&i=" + str(report.instructor.instructorID) + "&t=" + str(report.term.termID) + "&d=false")
+        link = "https://www.applyweb.com/eval/new/showreport/excel?r=2&c=" + str(report.id) + "&i=" + str(report.instructor.instructorID) + "&t=" + str(report.term.termID) + "&d=false"
+        print(f"Getting... {link}")
+        driver.get(link)
     time.sleep(5)
     print("Download Complete!")
 
@@ -119,24 +91,24 @@ def include_scores(reports, scores):
 # ---------------------------------------------------
 
 def get_all_reports():
-    #driver = auth.auth()
+    driver = trace_driver.auth()
     print("Getting Links")
-    #data = report_info_data(driver, 0)
+    # data = report_info_data(driver, 0)
 
-    with open('data/reports_noScores (ALL).json') as f:
+    with open('../data/reports_noScores (ALL).json') as f:
         data = json.load(f)['data']
     
     print("No_Scores")
     reports_noScores = get_reports_noScores(data)
-    #download_all_scores(driver, reports_noScores)
+    # download_all_scores(driver, reports_noScores)
     scores = jsonprep.get_all_scores()
     reports = include_scores(reports_noScores, scores)
-    j = json.dumps(reports, cls=cje.ComplexEncoder)
+    j = json.dumps(reports, cls=ComplexEncoder)
     with open('full_data.json', 'w') as f:
         f.write(j)
 
+    print("Done")
     return reports
 
 if __name__ == "__main__":
     get_all_reports()
-    print("Done")
