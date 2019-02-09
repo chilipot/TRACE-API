@@ -1,6 +1,5 @@
 '''
-This module contains functionality to authenticate chrome driver
-as well as "authenticate" with TRACE by logging in/opening it
+Creates a webdriver that is authenticated for Trace access
 '''
 
 import os
@@ -10,59 +9,55 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
-def initialize_chrome():
-    options = Options()
-    if os.getenv('HEADLESS', 'headless') == 'True':
-        options.add_argument("--headless")
-    prefs = {
-        "download.default_directory": os.getenv('DOWNLOAD', 'download'),
-        "download.prompt_for_download": False,
-        "download.directory_upgrade": True,
-        'safebrowsing.enabled': False,
-        'safebrowsing.disable_download_protection': True
-    }
-    options.add_experimental_option('prefs', prefs)
-    capa = DesiredCapabilities.CHROME
-    capa["pageLoadStrategy"] = "normal"
-    driver = webdriver.Chrome(executable_path=r"chromedriver.exe",options=options, desired_capabilities=capa)
+class TraceDriver(webdriver.Chrome):
+    def __init__(self, path):
+        options, capabilities = TraceDriver.chrome_settings()
+        super(TraceDriver, self).__init__(executable_path=path, options=options, desired_capabilities=capabilities)
+        self.command_executor._commands["send_command"] = (
+            "POST", '/session/$sessionId/chromium/send_command')
+        params = {'cmd': 'Page.setDownloadBehavior', 'params': {
+            'behavior': 'allow', 'downloadPath': os.getenv('DOWNLOAD', 'download')}}
+        self.execute("send_command", params)
 
-    driver.command_executor._commands["send_command"] = (
-        "POST", '/session/$sessionId/chromium/send_command')
-    params = {'cmd': 'Page.setDownloadBehavior', 'params': {
-        'behavior': 'allow', 'downloadPath': os.getenv('DOWNLOAD', 'download')}}
-    driver.execute("send_command", params)
-    return driver
+    @staticmethod
+    def chrome_settings():
+        options = Options()
+        if os.getenv('HEADLESS', 'headless') == 'True':
+            options.add_argument("--headless")
 
+        preferences = {
+            "download.default_directory": os.getenv('DOWNLOAD', 'download'),
+            "download.prompt_for_download": False,
+            "download.directory_upgrade": True,
+            'safebrowsing.enabled': False,
+            'safebrowsing.disable_download_protection': True
+        }
+        options.add_experimental_option('prefs', preferences)
+        capabilities = DesiredCapabilities.CHROME
+        capabilities["pageLoadStrategy"] = "normal"
 
-def CAS_authentification(driver):
-    driver.get("https://neuidmsso.neu.edu/cas-server/login")
-    usern = driver.find_element_by_id("username")
-    usern.send_keys(os.getenv('USERNAME', 'username'))
-    passw = driver.find_element_by_id("password")
-    passw.send_keys(os.getenv('PASSWORD', 'password'))
-    passw.submit()
-    return driver
+        return options, capabilities
 
+    def confirm_login(driver):
+        if ('Log In Successful' in driver.page_source):
+            print('Log In Successful')
+        else:
+            print('Log In Failed')
+            raise ValueError('Invalid credentials')
 
-def confirm_login(driver):
-    if ('Log In Successful' in driver.page_source):
-        print('Log In Successful')
-    else:
-        print('Log In Failed')
+    def authenticate(self, username=os.getenv('USERNAME'), password=os.getenv('PASSWORD')):
+        self.get("https://neuidmsso.neu.edu/cas-server/login")
+        user_input, password_input = self.find_element_by_id("username"), self.find_element_by_id("password")
+        user_input.send_keys(username)
+        password_input.send_keys(password)
+        password_input.submit()
+        self.confirm_login()
 
-def open_TRACE(driver):
-    # This step is necessary to use the exposed API's
-    # (some kind of authentication step for the TRACE site)
-    driver.get("https://www.applyweb.com/eval/shibboleth/neu/36892")
-    return driver
+    def open_TRACE(self):
+        self.get("https://www.applyweb.com/eval/shibboleth/neu/36892")
 
-def auth():
-    driver = initialize_chrome()
-    driver = CAS_authentification(driver)
-    confirm_login(driver)
-    driver = open_TRACE(driver)
-
-    return driver
 
 if __name__ == "__main__":
-    driver = auth()
+    driver = TraceDriver(r'chromedriver.exe')
+    driver.authenticate()
+    print(type(driver))
