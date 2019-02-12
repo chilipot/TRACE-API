@@ -1,5 +1,4 @@
 import os
-from urllib.parse import quote_plus
 
 # uncomment the line below for postgres database url from environment variable
 # postgres_local_base = os.environ['DATABASE_URL']

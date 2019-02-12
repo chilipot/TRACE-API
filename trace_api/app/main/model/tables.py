@@ -1,10 +1,11 @@
 # coding: utf-8
 import datetime
-from .. import db, flask_bcrypt
+
 import jwt
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, NCHAR, Unicode
 from sqlalchemy.dialects.mssql import BIT
 from sqlalchemy.orm import relationship
+from .. import db, flask_bcrypt
 from ..config import key
 
 
@@ -79,10 +80,10 @@ class User(db.Model):
 
     @password.setter
     def password(self, password):
-        self.PasswordHash = flask_bcrypt.generate_password_hash(password)
+        self.PasswordHash = flask_bcrypt.generate_password_hash(password).decode('utf-8')
 
     def check_password(self, password):
-        return flask_bcrypt.check_password_hash(self.PasswordHash, password)
+        return flask_bcrypt.check_password_hash(self.PasswordHash.encode(), password)
 
     def encode_auth_token(self, user_id):
         """
@@ -123,7 +124,7 @@ class User(db.Model):
             return 'Invalid token. Please log in again.'
 
     def __repr__(self):
-        return "<User '{}'>".format(self.username)
+        return "<User '{}'>".format(self.Username)
 
 
 class Report(db.Model):
