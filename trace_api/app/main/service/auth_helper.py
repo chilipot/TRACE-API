@@ -1,4 +1,4 @@
-from app.main.model.user import User
+from app.main.model.tables import User
 from ..service.blacklist_service import save_token
 
 
@@ -8,7 +8,7 @@ class Auth:
     def login_user(data):
         try:
             # fetch the user data
-            user = User.query.filter_by(email=data.get('email')).first()
+            user = User.query.filter_by(Email=data.get('email')).first()
             if user and user.check_password(data.get('password')):
                 auth_token = user.encode_auth_token(user.id)
                 if auth_token:
@@ -43,7 +43,7 @@ class Auth:
             resp = User.decode_auth_token(auth_token)
             if not isinstance(resp, str):
                 # mark the token as blacklisted
-                return save_token(token=auth_token)
+                return save_token(Token=auth_token)
             else:
                 response_object = {
                     'status': 'fail',
@@ -64,14 +64,14 @@ class Auth:
         if auth_token:
             resp = User.decode_auth_token(auth_token)
             if not isinstance(resp, str):
-                user = User.query.filter_by(id=resp).first()
+                user = User.query.filter_by(ID=resp).first()
                 response_object = {
                     'status': 'success',
                     'data': {
-                        'user_id': user.id,
-                        'email': user.email,
-                        'admin': user.admin,
-                        'registered_on': str(user.registered_on)
+                        'user_id': user.ID,
+                        'email': user.Email,
+                        'admin': user.Admin,
+                        'registered_on': str(user.RegisteredOn)
                     }
                 }
                 return response_object, 200

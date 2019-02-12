@@ -2,7 +2,7 @@ import uuid
 import datetime
 
 from app.main import db
-from app.main.model.user import User
+from app.main.model.tables import User
 
 
 def save_new_user(data):

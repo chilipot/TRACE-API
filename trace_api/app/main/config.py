@@ -11,12 +11,8 @@ class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'my_secret_key')
     DB_USER = os.getenv('DB_USERNAME')
     DB_PASSWORD = os.getenv('DB_PASSWORD')
-    params = quote_plus(
-        'DRIVER={{0}};SERVER={1};DATABASE={2};UID={3};PWD={4}'.format('SQL Server Native Client 11.0',
-                                                                      'DB_A3CB61_TRACE',
-                                                                      'SQL5007.site4now.net',
-                                                                      DB_USER, DB_PASSWORD))
-    SQLALCHEMY_DATABASE_URI = "mssql+pyodbc:///?odbc_connect=%s" % params
+    SQLALCHEMY_DATABASE_URI = f'mssql+pyodbc://{DB_USER}:{DB_PASSWORD}@SQL5007.site4now.net/' \
+        f'DB_A3CB61_TRACE?driver=SQL+Server+Native+Client+11.0'
     DEBUG = False
 
 
