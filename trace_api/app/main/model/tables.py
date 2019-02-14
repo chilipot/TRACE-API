@@ -5,6 +5,7 @@ import jwt
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, NCHAR, Unicode
 from sqlalchemy.dialects.mssql import BIT
 from sqlalchemy.orm import relationship
+
 from .. import db, flask_bcrypt
 from ..config import key
 
@@ -39,6 +40,11 @@ class Instructor(db.Model):
     FirstName = Column(Unicode(100), nullable=False)
     LastName = Column(Unicode(100), nullable=False)
     MiddleName = Column(Unicode(100))
+
+    @property
+    def full_name(self):
+        return ((self.FirstName or '') + ' ' + (self.MiddleName or '') + ' ' + (self.LastName or '')).strip().replace(
+            '  ', ' ')
 
 
 class LookupAnswerText(db.Model):
@@ -141,6 +147,10 @@ class Report(db.Model):
 
     Instructor = relationship('Instructor')
     Term = relationship('Term')
+
+    @property
+    def course_full_name(self):
+        return f'{self.Subject}{self.Number}: {self.Name} {self.Section}'
 
 
 class ScoreDatum(db.Model):
