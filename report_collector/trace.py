@@ -6,9 +6,9 @@ This module contains functionality to download report info
 import json
 import time
 
-import trace_driver
 from JSONSerializable import ComplexEncoder
 from JSONSerializable.Serializers import Instructor, Term, Report
+from trace_driver import TraceDriver
 
 from report_collector import jsonprep
 
@@ -91,7 +91,7 @@ def include_scores(reports, scores):
 # ---------------------------------------------------
 
 def get_all_reports():
-    driver = trace_driver.auth()
+    driver = TraceDriver(r'chromedriver.exe').authenticate()
     print("Getting Links")
     # data = report_info_data(driver, 0)
 
