@@ -12,6 +12,7 @@ class Config:
     DB_PASSWORD = os.getenv('DB_PASSWORD')
     SQLALCHEMY_DATABASE_URI = f'mssql+pyodbc://{DB_USER}:{DB_PASSWORD}@SQL5007.site4now.net/' \
         f'DB_A3CB61_TRACE?driver=SQL+Server+Native+Client+11.0'
+    ELASTICSEARCH_URL = os.getenv('ELASTICSEARCH_URL')
     DEBUG = False
 
 

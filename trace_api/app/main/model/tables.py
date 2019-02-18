@@ -6,6 +6,7 @@ from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, NCHAR, Unic
 from sqlalchemy.dialects.mssql import BIT
 from sqlalchemy.orm import relationship
 
+from app.main.model.mixins.mixins import SearchableMixin
 from .. import db, flask_bcrypt
 from ..config import key
 
@@ -67,6 +68,10 @@ class Term(db.Model):
 
     TermID = Column(Integer, primary_key=True)
     Title = Column(Unicode(200), nullable=False)
+
+    @property
+    def normal_title(self):
+        return self.Title.split(":")[-1].strip().replace(' - ', ' ')
 
 
 class User(db.Model):
@@ -133,7 +138,7 @@ class User(db.Model):
         return "<User '{}'>".format(self.Username)
 
 
-class Report(db.Model):
+class Report(SearchableMixin, db.Model):
     __tablename__ = 'Report'
 
     ReportID = Column(Integer, primary_key=True)
@@ -150,7 +155,7 @@ class Report(db.Model):
 
     @property
     def course_full_name(self):
-        return f'{self.Subject}{self.Number}: {self.Name} {self.Section}'
+        return f'{self.Subject}{self.Number} {self.Name}'
 
 
 class ScoreDatum(db.Model):

@@ -24,5 +24,9 @@ def get_all_course_reports(page, page_size, sort):
                                                                                              False).items
 
 
+def search_course_reports(query, page, page_size):
+    return Report.search(query, page, page_size)
+
+
 def get_course_report(report_id):
     return Report.query.filter_by(ReportID=report_id).first()

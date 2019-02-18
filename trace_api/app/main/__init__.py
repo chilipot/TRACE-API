@@ -1,3 +1,4 @@
+from elasticsearch import Elasticsearch
 from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
@@ -11,6 +12,8 @@ flask_bcrypt = Bcrypt()
 def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config_by_name[config_name])
+    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) if app.config.get(
+        'ELASTICSEARCH_URL') else None
     db.init_app(app)
     flask_bcrypt.init_app(app)
 

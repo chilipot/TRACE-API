@@ -1,7 +1,7 @@
 from flask_restplus import Resource
 
 from ..service.report_service import get_all_terms, get_term, get_all_instructors, get_instructor, \
-    get_all_course_reports, get_course_report
+    get_all_course_reports, get_course_report, search_course_reports
 from ..util.dto import ReportDto
 
 api = ReportDto.api
@@ -9,12 +9,19 @@ _term = ReportDto.term
 _instructor = ReportDto.instructor
 _course = ReportDto.course
 
-list_args_parser = api.parser()
-list_args_parser.add_argument('page', type=int, help='Page Number')
-list_args_parser.add_argument('pageSize', type=int, help='Size of Single Page')
+pagination_parser = api.parser()
+pagination_parser.add_argument('page', type=int, help='Page Number')
+pagination_parser.add_argument('pageSize', type=int, help='Size of Single Page')
+
+list_args_parser = pagination_parser.copy()
 list_args_parser.add_argument('orderBy', type=str, help='Expression to order by. In format <property> for ascending,'
                                                         + ' -<property> for descending, and <parent_prop>-<child_prop>'
-                                                        + ' to sort by a child property ascending or descending')
+                                                        + ' to sort by a child property ascending or descending.'
+                                                        + ' Ignored if "q" has a value (searching), where order will be'
+                                                        + ' by search relevance.')
+
+search_args_parser = list_args_parser.copy()
+search_args_parser.add_argument('q', type=str, help='Expression to search with')
 
 DEFAULT_PAGE_SIZE = 25
 
@@ -86,19 +93,23 @@ class Instructor(Resource):
 
 
 @api.route('report')
-@api.expect(list_args_parser)
+@api.expect(search_args_parser)
 class CourseReportList(Resource):
     @api.doc('list_of_reports')
     @api.marshal_list_with(_course, envelope='data')
     def get(self):
         """
-        List all reports
+        List many reports
         """
-        args = list_args_parser.parse_args()
+        args = search_args_parser.parse_args()
+        query = args.get('q') or ''
         page = args.get('page') or 1
         page_size = args.get('pageSize') or DEFAULT_PAGE_SIZE
         order_by = args.get('orderBy') or 'ReportID'
-        return get_all_course_reports(page, page_size, order_by)
+        if query:
+            return search_course_reports(query, page, page_size)
+        else:
+            return get_all_course_reports(page, page_size, order_by)
 
 
 @api.route('report/<report_id>')
