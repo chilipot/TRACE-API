@@ -13,6 +13,7 @@ class Config:
     SQLALCHEMY_DATABASE_URI = f'mssql+pyodbc://{DB_USER}:{DB_PASSWORD}@SQL5007.site4now.net/' \
         f'DB_A3CB61_TRACE?driver=SQL+Server+Native+Client+11.0'
     ELASTICSEARCH_URL = os.getenv('ELASTICSEARCH_URL')
+    PARALLEL_DOTS_API_KEY = os.getenv('PARALLEL_DOTS_API_KEY')
     DEBUG = False
 
 

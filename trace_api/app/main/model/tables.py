@@ -44,8 +44,7 @@ class Instructor(db.Model):
 
     @property
     def full_name(self):
-        return ((self.FirstName or '') + ' ' + (self.MiddleName or '') + ' ' + (self.LastName or '')).strip().replace(
-            '  ', ' ')
+        return ' '.join(filter(lambda x: x is not None and x.strip(), [self.FirstName, self.LastName]))
 
 
 class LookupAnswerText(db.Model):

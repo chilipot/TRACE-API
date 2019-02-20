@@ -1,4 +1,5 @@
 from elasticsearch import Elasticsearch
+import paralleldots
 from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
@@ -14,6 +15,8 @@ def create_app(config_name):
     app.config.from_object(config_by_name[config_name])
     app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) if app.config.get(
         'ELASTICSEARCH_URL') else None
+    paralleldots.set_api_key(app.config.get('PARALLEL_DOTS_API_KEY'))
+    app.paralleldots = paralleldots
     db.init_app(app)
     flask_bcrypt.init_app(app)
 

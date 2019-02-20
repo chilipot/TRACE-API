@@ -1,18 +1,20 @@
-from pprint import pprint as pp
+from functools import reduce
 
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
-from elasticsearch_dsl.query import MultiMatch
+from elasticsearch_dsl.query import MultiMatch, Match, Q
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
 from app.main import db, create_app
-from app.main.model.tables import Report
+from app.main.model.tables import Report, Instructor, Term
+
+from pprint import pprint as pp
 
 
 def connect_elasticsearch():
     _es = None
-    _es = Elasticsearch("localhost:9200")
+    _es = Elasticsearch("https://search-trace-api-jxs4od347kkmjnzstpobjwth64.us-east-2.es.amazonaws.com/")
     if _es.ping():
         print('Yay Connect')
     else:
@@ -100,6 +102,18 @@ def elasticsearch(query, page, per_page):
     return search_query.execute()
 
 
+def get_all_course_names():
+    return Report.query.all()
+
+
+def get_all_instructor_names():
+    return Instructor.query.all()
+
+
+def get_all_term_titles():
+    return Term.query.all()
+
+
 if __name__ == "__main__":
     es = connect_elasticsearch()
     # new_index = create_index(es, "course")
@@ -109,10 +123,39 @@ if __name__ == "__main__":
     manager = Manager(app)
     migrate = Migrate(app, db)
     manager.add_command('db', MigrateCommand)
-    #
-    # index_all_courses(es, "course")
-    results_page = elasticsearch("engw 1111 westhuges", 1, 25)
-    pp(results_page)
 
-    sql_results = map_all_courses([x['report_id'] for x in results_page])
-    pp(sql_results)
+    # import random
+    #
+    # course_names = {' '.join(random.sample(x.split(" "), len(x.split(" ")))).lower(): 'course' for x in
+    #                 set(r.course_full_name for r in get_all_course_names())}
+    # instructor_names = {' '.join(random.sample(x.split(" "), len(x.split(" ")))).lower(): 'instructor' for x in
+    #                     set(r.full_name for r in get_all_instructor_names())}
+    # term_titles = {' '.join(random.sample(x.split(" "), len(x.split(" ")))).lower(): 'term' for x in
+    #                set(r.normal_title for r in get_all_term_titles())}
+    #
+    # entity_lookup = {**course_names, **instructor_names}
+    # entity_lookup = {**entity_lookup, **term_titles}
+    #
+    # data_objs = []
+    # for i in range(0, 8000):
+    #     entities = [random.sample(course_names.keys(), 1)[0], random.sample(instructor_names.keys(), 1)[0],
+    #                 random.sample(term_titles.keys(), 1)[0]]
+    #     random.shuffle(entities)
+    #     search_str = ' '.join(entities)
+    #     classifications = [{"start": search_str.index(entity), "end": search_str.index(entity) + len(entity),
+    #                         "label": entity_lookup.get(entity), "text": entity} for entity in entities]
+    #     data_obj = [search_str, classifications]
+    #     data_objs.append(data_obj)
+    #     print(str(i))
+    #
+    # import json
+    # with open("model_data_temp.txt", "w") as f:
+    #     json.dump(data_objs, f)
+
+
+    # index_all_courses(es, "course")
+    # results_page = elasticsearch("engw 1111 westhuges", 1, 25)
+    # pp(results_page)
+    #
+    # sql_results = map_all_courses([x['report_id'] for x in results_page])
+    # pp(sql_results)
