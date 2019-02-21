@@ -63,7 +63,7 @@ class Term(Resource):
 @api.expect(list_args_parser)
 class InstructorList(Resource):
     @api.doc('list_of_instructors')
-    @api.marshal_list_with(_instructor, envelope='data')
+    # @api.marshal_list_with(_instructor, envelope='data') # <-  Marshalling is slow for long lists
     def get(self):
         """
         List all instructors
@@ -72,7 +72,7 @@ class InstructorList(Resource):
         page = args.get('page') or 1
         page_size = args.get('pageSize') or DEFAULT_PAGE_SIZE
         order_by = args.get('orderBy', 'InstructorID') or 'InstructorID'
-        return get_all_instructors(page, page_size, order_by)
+        return {'data': get_all_instructors(page, page_size, order_by)}
 
 
 @api.route('instructor/<instructor_id>')

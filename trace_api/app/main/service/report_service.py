@@ -10,15 +10,16 @@ def get_all_terms(page, page_size, sort):
 
 
 def get_term(term_id):
-    return Term.query.filter_by(TermID=term_id).first()
+    return Term.query.get(term_id)
 
 
 def get_all_instructors(page, page_size, sort):
-    return sort_query(Instructor.query, sort).paginate(page, page_size, False).items
+    sql_results = sort_query(Instructor.query, sort).paginate(page, page_size, False).items
+    return [Instructor.as_dict(inst) for inst in sql_results]
 
 
 def get_instructor(instructor_id):
-    return Instructor.query.filter_by(InstructorID=instructor_id).first()
+    return Instructor.query.get(instructor_id)
 
 
 def get_all_course_reports(page, page_size, sort):
@@ -36,4 +37,4 @@ def search_course_reports(query, page, page_size):
 
 
 def get_course_report(report_id):
-    return Report.query.filter_by(ReportID=report_id).first()
+    return Report.query.get(report_id)
