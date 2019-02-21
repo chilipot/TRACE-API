@@ -1,5 +1,6 @@
 from flask_restplus import Resource
 
+from app.main.model.tables import Report
 from ..service.report_service import get_all_terms, get_term, get_all_instructors, get_instructor, \
     get_all_course_reports, get_course_report, search_course_reports
 from ..util.dto import ReportDto
@@ -96,7 +97,7 @@ class Instructor(Resource):
 @api.expect(search_args_parser)
 class CourseReportList(Resource):
     @api.doc('list_of_reports')
-    @api.marshal_list_with(_course, envelope='data')
+    # @api.marshal_list_with(_course, envelope='data')  # <- Marshalling is pretty slow with nested joins
     def get(self):
         """
         List many reports
@@ -107,9 +108,11 @@ class CourseReportList(Resource):
         page_size = args.get('pageSize') or DEFAULT_PAGE_SIZE
         order_by = args.get('orderBy') or 'ReportID'
         if query:
-            return search_course_reports(query, page, page_size)
+            sql_results = search_course_reports(query, page, page_size)
         else:
-            return get_all_course_reports(page, page_size, order_by)
+            sql_results = get_all_course_reports(page, page_size, order_by)
+
+        return {"data": [Report.as_dict(obj) for obj in sql_results]}
 
 
 @api.route('report/<report_id>')

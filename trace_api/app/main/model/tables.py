@@ -46,6 +46,9 @@ class Instructor(db.Model):
     def full_name(self):
         return ' '.join(filter(lambda x: x is not None and x.strip(), [self.FirstName, self.LastName]))
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 class LookupAnswerText(db.Model):
     __tablename__ = 'Lookup_AnswerText'
@@ -72,6 +75,9 @@ class Term(db.Model):
     def normal_title(self):
         return self.Title.split(":")[-1].strip().replace(' - ', ' ')
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 class User(db.Model):
     __tablename__ = 'User'
@@ -95,7 +101,8 @@ class User(db.Model):
     def check_password(self, password):
         return flask_bcrypt.check_password_hash(self.PasswordHash.encode(), password)
 
-    def encode_auth_token(self, user_id):
+    @staticmethod
+    def encode_auth_token(user_id):
         """
         Generates the Auth Token
         :return: string
@@ -155,6 +162,13 @@ class Report(SearchableMixin, db.Model):
     @property
     def course_full_name(self):
         return f'{self.Subject}{self.Number} {self.Name}'
+
+    def as_dict(self):
+        fks = [fk.column.name for fk in self.__table__.foreign_keys]
+        columns = {c.name: getattr(self, c.name) for c in self.__table__.columns if c.name not in fks}
+        columns['Instructor'] = self.Instructor.as_dict()
+        columns['Term'] = self.Term.as_dict()
+        return columns
 
 
 class ScoreDatum(db.Model):

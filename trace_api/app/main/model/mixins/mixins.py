@@ -3,6 +3,7 @@ from functools import reduce
 from elasticsearch_dsl import Search
 from elasticsearch_dsl.query import MultiMatch, Q, Match
 from flask import current_app, session
+from sqlalchemy.orm import contains_eager
 
 
 class SearchableMixin(object):
@@ -11,10 +12,7 @@ class SearchableMixin(object):
         optimized_query, instructor = get_instructor_from_query(expr)
         course_search, term = get_term_from_query(optimized_query)
         ids = [x['report_id'] for x in elastic_search(course_search, instructor, term, page, per_page)]
-        if len(ids) == 0:
-            return []
-
-        return map_all_courses(cls, ids)
+        return map_all_courses(cls, ids) if len(ids) > 0 else []
 
 
 def get_term_from_query(query):
@@ -37,7 +35,8 @@ def get_instructor_from_query(query):
         entity = session_found_name
     else:
         pldots = current_app.paralleldots
-        result = pldots.ner(query)  # {"entities": [{"name": "benjamin lerner"}]}  #
+        result = pldots.ner(query)
+        # result = {"entities": [{"name": "benjamin lerner"}]} # Debug
         entities = [e['name'] for e in result['entities']]
         entity = entities[0] if len(entities) > 0 else None
         if len(entities) > 0 and entities[0] not in set(session.get('instructor_names')):
@@ -56,13 +55,14 @@ def pop_phrase_from_query(query, phrase, case_sensitive=False):
 
 
 def map_all_courses(cls, ids):
-    query_result = cls.query.filter(cls.ReportID.in_(ids)).all()
+    query_result = cls.query.filter(cls.ReportID.in_(ids)).join(cls.Term).join(cls.Instructor).options(
+        contains_eager(cls.Term)).options(contains_eager(cls.Instructor)).all()
     object_map = {o.ReportID: o for o in query_result}
     sql_objects = [object_map[obj_id] for obj_id in ids]
     return sql_objects
 
 
-def elastic_search(query, instructor_search, term_search, page, per_page, id_field_name='report_id'):
+def construct_query(query, instructor_search, term_search):
     fields_list = ['course_title', 'term_title', 'instructor_full_name']
 
     queries = []
@@ -94,7 +94,12 @@ def elastic_search(query, instructor_search, term_search, page, per_page, id_fie
     if query and query.strip():
         queries.append(match_query)
 
-    full_query = reduce(lambda q1, q2: q1 & q2, queries)
+    full_query = reduce(lambda q1, q2: q1 | q2, queries)
+    return full_query
+
+
+def elastic_search(query, instructor_search, term_search, page, per_page, id_field_name='report_id'):
+    full_query = construct_query(query, instructor_search, term_search)
     search_query = Search(using=current_app.elasticsearch, index='course').query(full_query).source(id_field_name)[
                    ((page - 1) * per_page):(page * per_page)]
     return search_query.execute()
