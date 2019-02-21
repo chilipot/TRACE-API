@@ -1,6 +1,5 @@
 from flask_restplus import Resource
 
-from app.main.model.tables import Report
 from ..service.report_service import get_all_terms, get_term, get_all_instructors, get_instructor, \
     get_all_course_reports, get_course_report, search_course_reports
 from ..util.dto import ReportDto
@@ -108,11 +107,11 @@ class CourseReportList(Resource):
         page_size = args.get('pageSize') or DEFAULT_PAGE_SIZE
         order_by = args.get('orderBy') or 'ReportID'
         if query:
-            sql_results = search_course_reports(query, page, page_size)
+            results = search_course_reports(query, page, page_size)
         else:
-            sql_results = get_all_course_reports(page, page_size, order_by)
+            results = get_all_course_reports(page, page_size, order_by)
 
-        return {"data": [Report.as_dict(obj) for obj in sql_results]}
+        return {"data": results}
 
 
 @api.route('report/<report_id>')

@@ -22,16 +22,17 @@ def get_instructor(instructor_id):
 
 
 def get_all_course_reports(page, page_size, sort):
-    return sort_query(Report.query.join(Report.Term).join(Report.Instructor).options(
+    sql_results = sort_query(Report.query.join(Report.Term).join(Report.Instructor).options(
         contains_eager(Report.Term)).options(contains_eager(Report.Instructor)), sort).paginate(page, page_size,
                                                                                                 False).items
+    return [Report.as_dict(obj) for obj in sql_results]
 
 
 def search_course_reports(query, page, page_size):
     if session.get('cached_terms', None) is None:
         session['cached_terms'] = [x.Title.split(":")[-1].strip().replace(' - ', ' ')
                                    for x in Term.query.with_entities(Term.Title).all()]
-    return Report.search(query, page, page_size)
+    return [Report.as_dict(obj) for obj in Report.search(query, page, page_size)]
 
 
 def get_course_report(report_id):
