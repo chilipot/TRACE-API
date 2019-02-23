@@ -1,8 +1,8 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-/.vs/slnx.sqlite
-/site/TRACE-API/.vs/TRACE-API/v15/Server/sqlite3
-/.idea
+﻿/.idea
 config.ini
+*.pyc
+*.xlsx
+*.xls
+*.csv
+/site
+/.vs
