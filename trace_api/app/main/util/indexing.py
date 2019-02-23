@@ -1,15 +1,11 @@
-from functools import reduce
-
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
-from elasticsearch_dsl.query import MultiMatch, Match, Q
+from elasticsearch_dsl.query import MultiMatch
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
 from app.main import db, create_app
 from app.main.model.tables import Report, Instructor, Term
-
-from pprint import pprint as pp
 
 
 def connect_elasticsearch():
@@ -151,7 +147,6 @@ if __name__ == "__main__":
     # import json
     # with open("model_data_temp.txt", "w") as f:
     #     json.dump(data_objs, f)
-
 
     # index_all_courses(es, "course")
     # results_page = elasticsearch("engw 1111 westhuges", 1, 25)

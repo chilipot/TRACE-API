@@ -1,5 +1,5 @@
 from flask import session
-from sqlalchemy.orm import contains_eager, joinedload, subqueryload
+from sqlalchemy.orm import contains_eager
 from sqlalchemy_utils import sort_query
 
 from app.main.model.tables import Term, Instructor, Report

@@ -187,7 +187,8 @@ class ScoreDatum(db.Model):
     def as_dict(self, no_primary_key=False):
         fks = [fk.column.name for fk in self.__table__.foreign_keys]
         pk = self.__table__.primary_key.columns.values()[0].name
-        columns = {c.name: getattr(self, c.name) for c in self.__table__.columns if c.name not in fks and (no_primary_key and c.name != pk)}
+        columns = {c.name: getattr(self, c.name) for c in self.__table__.columns if
+                   c.name not in fks and (no_primary_key and c.name != pk)}
         columns['Metadata'] = {
             'Course': self.Report.course_full_name,
             'Term': self.Report.Term.normal_title,
@@ -216,7 +217,8 @@ class Question(db.Model):
     def as_dict(self, no_primary_key=False):
         fks = [fk.column.name for fk in self.__table__.foreign_keys]
         pk = self.__table__.primary_key.columns.values()[0].name
-        columns = {c.name: getattr(self, c.name) for c in self.__table__.columns if c.name not in fks and (no_primary_key and c.name != pk)}
+        columns = {c.name: getattr(self, c.name) for c in self.__table__.columns if
+                   c.name not in fks and (no_primary_key and c.name != pk)}
         columns['Text'] = self.LookupQuestionText.Text
         columns['Answers'] = [a.as_dict(no_primary_key=True) for a in self.Answers]
         return columns
@@ -236,6 +238,7 @@ class Answer(db.Model):
     def as_dict(self, no_primary_key=False):
         fks = [fk.column.name for fk in self.__table__.foreign_keys]
         pk = self.__table__.primary_key.columns.values()[0].name
-        columns = {c.name: getattr(self, c.name) for c in self.__table__.columns if c.name not in fks and (no_primary_key and c.name != pk)}
+        columns = {c.name: getattr(self, c.name) for c in self.__table__.columns if
+                   c.name not in fks and (no_primary_key and c.name != pk)}
         columns['Text'] = self.LookupAnswerText.Text
         return columns

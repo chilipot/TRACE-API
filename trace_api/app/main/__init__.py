@@ -1,7 +1,8 @@
-import paralleldots
 import logging
+
+import paralleldots
 from elasticsearch import Elasticsearch
-from flask import Flask, jsonify
+from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 
