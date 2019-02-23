@@ -64,7 +64,7 @@ class Auth:
         if auth_token:
             resp = User.decode_auth_token(auth_token)
             if not isinstance(resp, str):
-                user = User.query.filter_by(ID=resp).first()
+                user = User.query.get(resp)
                 response_object = {
                     'status': 'success',
                     'data': {

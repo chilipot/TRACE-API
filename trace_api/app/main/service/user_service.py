@@ -31,7 +31,7 @@ def get_all_users():
 
 
 def get_a_user(public_id):
-    return User.query.filter_by(PublicID=public_id).first()
+    return User.query.get(public_id)
 
 
 def save_changes(data):
