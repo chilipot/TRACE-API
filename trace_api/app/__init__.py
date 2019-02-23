@@ -18,6 +18,6 @@ api.add_namespace(auth_ns)
 api.add_namespace(report_ns, path='/')
 
 
-@api.errorhandler(Exception)
+@api.errorhandler(BaseException)
 def base_exception_handler(error):
     return {'message': f'An unknown error has occurred. Error: {str(error)}'}, getattr(error, 'code', 500)

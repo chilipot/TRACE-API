@@ -1,13 +1,14 @@
 from flask_restplus import Resource
 
 from ..service.report_service import get_all_terms, get_term, get_all_instructors, get_instructor, \
-    get_all_course_reports, get_course_report, search_course_reports
+    get_all_course_reports, get_course_report, search_course_reports, get_score_data
 from ..util.dto import ReportDto
 
 api = ReportDto.api
 _term = ReportDto.term
 _instructor = ReportDto.instructor
 _course = ReportDto.course
+_report = ReportDto.report
 
 pagination_parser = api.parser()
 pagination_parser.add_argument('page', type=int, help='Page Number')
@@ -125,6 +126,23 @@ class CourseReport(Resource):
         get a report given its identifier
         """
         report = get_course_report(report_id)
+        if not report:
+            api.abort(404)
+        else:
+            return report
+
+
+@api.route('report/<report_id>/scores')
+@api.param('report_id', 'The Report identifier')
+@api.response(404, 'Report not found.')
+class ReportScores(Resource):
+    @api.doc('get scores of a report')
+    # @api.marshal_with(_report) # <- Once again, normal marshalling is slow
+    def get(self, report_id):
+        """
+        get a report given its identifier
+        """
+        report = get_score_data(report_id)
         if not report:
             api.abort(404)
         else:

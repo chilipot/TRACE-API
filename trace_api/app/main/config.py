@@ -14,6 +14,7 @@ class Config:
         f'DB_A3CB61_TRACE?driver=SQL+Server+Native+Client+11.0'
     ELASTICSEARCH_URL = os.getenv('ELASTICSEARCH_URL')
     PARALLEL_DOTS_API_KEY = os.getenv('PARALLEL_DOTS_API_KEY')
+    SHOW_QUERIES_DEBUG = False
     DEBUG = False
 
 

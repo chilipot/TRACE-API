@@ -158,6 +158,7 @@ class Report(SearchableMixin, db.Model):
 
     Instructor = relationship('Instructor')
     Term = relationship('Term')
+    ScoreDatum = relationship('ScoreDatum', back_populates='Report', uselist=False)
 
     @property
     def course_full_name(self):
@@ -180,7 +181,20 @@ class ScoreDatum(db.Model):
     Responses = Column(Integer, nullable=False)
     Declines = Column(Integer, nullable=False)
 
-    Report = relationship('Report')
+    Report = relationship('Report', back_populates='ScoreDatum', uselist=False)
+    Questions = relationship('Question', back_populates='ScoreDatum', lazy='joined')
+
+    def as_dict(self, no_primary_key=False):
+        fks = [fk.column.name for fk in self.__table__.foreign_keys]
+        pk = self.__table__.primary_key.columns.values()[0].name
+        columns = {c.name: getattr(self, c.name) for c in self.__table__.columns if c.name not in fks and (no_primary_key and c.name != pk)}
+        columns['Metadata'] = {
+            'Course': self.Report.course_full_name,
+            'Term': self.Report.Term.normal_title,
+            'Instructor': self.Report.Instructor.full_name
+        }
+        columns['Questions'] = [q.as_dict(no_primary_key=True) for q in self.Questions]
+        return columns
 
 
 class Question(db.Model):
@@ -195,8 +209,17 @@ class Question(db.Model):
     Median = Column(Float(53), nullable=False)
     StdDev = Column(Float(53), nullable=False)
 
-    ScoreDatum = relationship('ScoreDatum')
-    Lookup_QuestionText = relationship('LookupQuestionText')
+    ScoreDatum = relationship('ScoreDatum', back_populates="Questions")
+    LookupQuestionText = relationship('LookupQuestionText', lazy='joined')
+    Answers = relationship('Answer', back_populates='Question', lazy='joined')
+
+    def as_dict(self, no_primary_key=False):
+        fks = [fk.column.name for fk in self.__table__.foreign_keys]
+        pk = self.__table__.primary_key.columns.values()[0].name
+        columns = {c.name: getattr(self, c.name) for c in self.__table__.columns if c.name not in fks and (no_primary_key and c.name != pk)}
+        columns['Text'] = self.LookupQuestionText.Text
+        columns['Answers'] = [a.as_dict(no_primary_key=True) for a in self.Answers]
+        return columns
 
 
 class Answer(db.Model):
@@ -207,5 +230,12 @@ class Answer(db.Model):
     QuestionID = Column(ForeignKey('Question.QuestionID'), nullable=False)
     Value = Column(Integer, nullable=False)
 
-    Lookup_AnswerText = relationship('LookupAnswerText')
-    Question = relationship('Question')
+    LookupAnswerText = relationship('LookupAnswerText', lazy='joined')
+    Question = relationship('Question', back_populates="Answers")
+
+    def as_dict(self, no_primary_key=False):
+        fks = [fk.column.name for fk in self.__table__.foreign_keys]
+        pk = self.__table__.primary_key.columns.values()[0].name
+        columns = {c.name: getattr(self, c.name) for c in self.__table__.columns if c.name not in fks and (no_primary_key and c.name != pk)}
+        columns['Text'] = self.LookupAnswerText.Text
+        return columns

@@ -1,5 +1,5 @@
 from flask import session
-from sqlalchemy.orm import contains_eager
+from sqlalchemy.orm import contains_eager, joinedload, subqueryload
 from sqlalchemy_utils import sort_query
 
 from app.main.model.tables import Term, Instructor, Report
@@ -38,3 +38,7 @@ def search_course_reports(query, page, page_size):
 
 def get_course_report(report_id):
     return Report.query.get(report_id)
+
+
+def get_score_data(report_id):
+    return get_course_report(report_id).ScoreDatum.as_dict(no_primary_key=True)

@@ -1,6 +1,7 @@
-from elasticsearch import Elasticsearch
 import paralleldots
-from flask import Flask
+import logging
+from elasticsearch import Elasticsearch
+from flask import Flask, jsonify
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 
@@ -19,5 +20,7 @@ def create_app(config_name):
     app.paralleldots = paralleldots
     db.init_app(app)
     flask_bcrypt.init_app(app)
-
+    logging.basicConfig()
+    if app.config.get('SHOW_QUERIES_DEBUG', False):
+        logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
     return app
