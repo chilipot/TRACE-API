@@ -4,5 +4,3 @@ config.ini
 *.xlsx
 *.xls
 *.csv
-/site
-/.vs
