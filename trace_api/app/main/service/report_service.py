@@ -41,4 +41,4 @@ def get_course_report(report_id):
 
 
 def get_score_data(report_id):
-    return get_course_report(report_id).ScoreDatum.as_dict(no_primary_key=True)
+    return get_course_report(report_id).as_report_dict()
