@@ -23,6 +23,7 @@ class DevelopmentConfig(Config):
     # SQLALCHEMY_DATABASE_URI = postgres_local_base
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SHOW_QUERIES_DEBUG = False
 
 
 class TestingConfig(Config):
