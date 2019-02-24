@@ -171,6 +171,15 @@ class Report(SearchableMixin, db.Model):
         columns['Term'] = self.Term.as_dict()
         return columns
 
+    def as_report_dict(self):
+        columns = {'Metadata': {
+            'Course': self.course_full_name,
+            'Term': self.Term.normal_title,
+            'Instructor': self.Instructor.full_name
+        }}
+        columns.update(self.ScoreDatum.as_dict(no_primary_key=True))
+        return columns
+
 
 class ScoreDatum(db.Model):
     __tablename__ = 'ScoreData'
@@ -189,11 +198,6 @@ class ScoreDatum(db.Model):
         pk = self.__table__.primary_key.columns.values()[0].name
         columns = {c.name: getattr(self, c.name) for c in self.__table__.columns if
                    c.name not in fks and (no_primary_key and c.name != pk)}
-        columns['Metadata'] = {
-            'Course': self.Report.course_full_name,
-            'Term': self.Report.Term.normal_title,
-            'Instructor': self.Report.Instructor.full_name
-        }
         columns['Questions'] = [q.as_dict(no_primary_key=True) for q in self.Questions]
         return columns
 
