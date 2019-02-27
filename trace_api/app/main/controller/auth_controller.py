@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, session
 from flask_restplus import Resource
 
 from app.main.service.auth_helper import Auth
@@ -30,6 +30,8 @@ class LogoutAPI(Resource):
 
     @api.doc('logout a user')
     def post(self):
+        if session:
+            session.clear()
         # get auth token
         auth_header = request.headers.get('Authorization')
         return Auth.logout_user(data=auth_header)
