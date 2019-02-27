@@ -30,9 +30,6 @@ def get_all_course_reports(page, page_size, sort):
 
 
 def search_course_reports(query, page, page_size):
-    if session.get('cached_terms', None) is None:
-        session['cached_terms'] = [x.Title.split(":")[-1].strip().replace(' - ', ' ')
-                                   for x in Term.query.with_entities(Term.Title).all()]
     return [Report.as_dict(obj) for obj in Report.search(query, page, page_size)]
 
 
