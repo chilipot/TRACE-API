@@ -8,11 +8,29 @@ from sqlalchemy.orm import contains_eager
 
 class SearchableMixin(object):
     @classmethod
-    def search(cls, expr, page, per_page):
+    def _perform_search(cls, expr, page, per_page, highlights=False):
         optimized_query, instructor = get_instructor_from_query(expr)
         course_search, term = get_term_from_query(optimized_query)
-        ids = [x['report_id'] for x in elastic_search(course_search, instructor, term, page, per_page)]
+        return elastic_search(course_search, instructor, term, page, per_page, highlights=highlights)
+
+    @classmethod
+    def search(cls, expr, page, per_page):
+        search_result = cls._perform_search(expr, page, per_page, highlights=False)
+        ids = [x['report_id'] for x in search_result]
         return map_all_courses(cls, ids) if len(ids) > 0 else []
+
+    @classmethod
+    def highlights(cls, expr, page, per_page):
+        search_result = cls._perform_search(expr, page, per_page, highlights=True)
+        highlights_results = [x.meta for x in search_result if x.meta.highlight]
+        highlights = {'course_title': {}, 'instructor_full_name': {}, 'term_title': {}}
+        for h in highlights_results:
+            for key, val in h.highlight.to_dict().items():
+                if highlights[key].get(val[0], -1) < h.score:
+                    highlights[key][val[0]] = h.score
+        for key, val in highlights.items():
+            highlights[key] = [pair[0] for pair in sorted(val.items(), key=lambda x: x[1], reverse=True)]
+        return highlights
 
 
 def get_term_from_query(query):
@@ -36,7 +54,7 @@ def get_instructor_from_query(query):
     else:
         pldots = current_app.paralleldots
         result = pldots.ner(query)
-        # result = {"entities": [{"name": "benjamin lerner"}]} # Debug
+        # result = {"entities": [{"name": "benjamin lerner"}]}  # Debug
         entities = [e['name'] for e in result['entities']]
         entity = entities[0] if len(entities) > 0 else None
         if len(entities) > 0 and entities[0] not in set(session.get('instructor_names')):
@@ -98,8 +116,9 @@ def construct_query(query, instructor_search, term_search):
     return full_query
 
 
-def elastic_search(query, instructor_search, term_search, page, per_page, id_field_name='report_id'):
+def elastic_search(query, instructor_search, term_search, page, per_page, id_field_name='report_id', highlights=False):
     full_query = construct_query(query, instructor_search, term_search)
-    search_query = Search(using=current_app.elasticsearch, index='course').query(full_query).source(id_field_name)[
-                   ((page - 1) * per_page):(page * per_page)]
-    return search_query.execute()
+    search_query = Search(using=current_app.elasticsearch, index='course').query(full_query).source(id_field_name)
+    if highlights:
+        search_query = search_query.highlight('course_title').highlight('term_title').highlight('instructor_full_name')
+    return search_query[((page - 1) * per_page):(page * per_page)].execute()
