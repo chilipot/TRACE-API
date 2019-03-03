@@ -1,0 +1,11 @@
+version: '3.7'
+services:
+  api:
+    build:
+      context: ../
+      dockerfile: Dockerfile.api
+      cache_from:
+        - python:3.7-slim
+    ports:
+      - '5000:5000'
+      - '1433:1433'

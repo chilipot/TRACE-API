@@ -1,0 +1,5 @@
+FROM nginx
+
+MAINTAINER Daniel Guddemi "danguddemi@gmail.com"
+
+ADD deployment/nginx.conf /etc/nginx/nginx.conf
