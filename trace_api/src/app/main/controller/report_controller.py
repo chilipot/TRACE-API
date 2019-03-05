@@ -67,7 +67,7 @@ class Term(Resource):
 @api.expect(list_args_parser)
 class InstructorList(Resource):
     @api.doc('list_of_instructors')
-    # @trace_api.marshal_list_with(_instructor, envelope='data') # <-  Marshalling is slow for long lists
+    # @api.marshal_list_with(_instructor, envelope='data') # <-  Marshalling is slow for long lists
     def get(self):
         """
         List all instructors
@@ -100,7 +100,7 @@ class Instructor(Resource):
 @api.expect(search_args_parser)
 class CourseReportList(Resource):
     @api.doc('list_of_reports')
-    # @trace_api.marshal_list_with(_course, envelope='data')  # <- Marshalling is pretty slow with nested joins
+    # @api.marshal_list_with(_course, envelope='data')  # <- Marshalling is pretty slow with nested joins
     def get(self):
         """
         List many reports
@@ -140,7 +140,7 @@ class CourseReport(Resource):
 @api.response(404, 'Report not found.')
 class ReportScores(Resource):
     @api.doc('get scores of a report')
-    # @trace_api.marshal_with(_report) # <- Once again, normal marshalling is slow
+    # @api.marshal_with(_report) # <- Once again, normal marshalling is slow
     def get(self, report_id):
         """
         get a report given its identifier
