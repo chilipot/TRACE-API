@@ -87,12 +87,3 @@ class RefreshTokens(Resource):
         res = jsonify({'access_token': access_token})
         res.status_code = 201
         return res
-
-
-@api.route('/protected')
-class Protected(Resource):
-    @jwt_required
-    def get(self):
-        res = jsonify({'hello': 'world'})
-        res.status_code = 200
-        return res
