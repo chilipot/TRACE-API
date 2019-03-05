@@ -4,8 +4,34 @@ services:
     build:
       context: ../
       dockerfile: Dockerfile.api
-      cache_from:
-        - python:3.7-slim
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - CIPHER_KEY=${CIPHER_KEY}
     ports:
       - '5000:5000'
       - '1433:1433'
+    networks:
+      - redis_net
+    links:
+      - redis
+    deploy:
+      replicas: 2
+  redis:
+    image: redis:5.0-alpine
+    hostname: redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - redis_net
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+volumes:
+  redis_data:
+
+networks:
+  redis_net:
+    driver: bridge
