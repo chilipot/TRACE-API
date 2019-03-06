@@ -1,7 +1,9 @@
 from flask_restplus import Resource
 
-from ..service.report_service import get_all_terms, get_term, get_all_instructors, get_instructor, \
-    get_all_course_reports, get_course_report, search_course_reports, get_score_data
+from ..service.report_service import get_all_terms, get_term, \
+    get_all_instructors, get_instructor, \
+    get_all_course_reports, get_course_report, search_course_reports, \
+    get_score_data
 from ..util.dto import ReportDto
 
 api = ReportDto.api
@@ -15,11 +17,12 @@ pagination_parser.add_argument('page', type=int, help='Page Number')
 pagination_parser.add_argument('pageSize', type=int, help='Size of Single Page')
 
 list_args_parser = pagination_parser.copy()
-list_args_parser.add_argument('orderBy', type=str, help='Expression to order by. In format <property> for ascending,'
-                                                        + ' -<property> for descending, and <parent_prop>-<child_prop>'
-                                                        + ' to sort by a child property ascending or descending.'
-                                                        + ' Ignored if "q" has a value (searching), where order will be'
-                                                        + ' by search relevance.')
+list_args_parser.add_argument('orderBy', type=str,
+                              help='Expression to order by. In format <property> for ascending,'
+                                   + ' -<property> for descending, and <parent_prop>-<child_prop>'
+                                   + ' to sort by a child property ascending or descending.'
+                                   + ' Ignored if "q" has a value (searching), where order will be'
+                                   + ' by search relevance.')
 
 search_args_parser = list_args_parser.copy()
 search_args_parser.add_argument('q', type=str, help='Expression to search with')
