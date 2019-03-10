@@ -5,7 +5,7 @@ from .main.controller.auth_controller import api as auth_ns
 from .main.controller.report_controller import api as report_ns
 from .main.controller.user_controller import api as user_ns
 
-blueprint = Blueprint('api', __name__, url_prefix='/api/v1.0')
+blueprint = Blueprint('api', __name__, url_prefix='/api/v1')
 
 api = Api(blueprint,
           title='TRACE-API',
@@ -21,3 +21,4 @@ api.add_namespace(report_ns, path='/')
 @api.errorhandler(BaseException)
 def base_exception_handler(error):
     return {'message': f'An unknown error has occurred. Error: {str(error)}'}, getattr(error, 'code', 500)
+

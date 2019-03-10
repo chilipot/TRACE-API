@@ -10,7 +10,8 @@ from app.main.model.tables import Report, Instructor, Term
 
 def connect_elasticsearch():
     _es = None
-    _es = Elasticsearch("https://search-trace-api-jxs4od347kkmjnzstpobjwth64.us-east-2.es.amazonaws.com/")
+    _es = Elasticsearch(
+        "https://search-trace-api-jxs4od347kkmjnzstpobjwth64.us-east-2.es.amazonaws.com/")
     if _es.ping():
         print('Yay Connect')
     else:
@@ -50,7 +51,8 @@ def create_index(es_object, index_name='course'):
     try:
         if not es_object.indices.exists(index_name):
             # Ignore 400 means to ignore "Index Already Exist" error.
-            es_object.indices.create(index=index_name, ignore=400, body=settings)
+            es_object.indices.create(index=index_name, ignore=400,
+                                     body=settings)
             print('Created Index')
         created = True
     except Exception as ex:
@@ -61,7 +63,8 @@ def create_index(es_object, index_name='course'):
 
 def store_record(elastic_object, index_name, record):
     try:
-        outcome = elastic_object.index(index=index_name, doc_type='courses', body=record)
+        outcome = elastic_object.index(index=index_name, doc_type='courses',
+                                       body=record)
     except Exception as ex:
         print('Error in indexing data')
         print(str(ex))
@@ -85,16 +88,20 @@ def index_all_courses(elastic_object, index_name):
 
 
 def map_all_courses(ids):
-    query_result = Report.query.filter(Report.ReportID.in_(ids)).join(Report.Term).join(Report.Instructor).all()
+    query_result = Report.query.filter(Report.ReportID.in_(ids)).join(
+        Report.Term).join(Report.Instructor).all()
     object_map = {o.ReportID: o for o in query_result}
     sql_objects = [object_map[obj_id] for obj_id in ids]
     return sql_objects
 
 
 def elasticsearch(query, page, per_page):
-    match_query = MultiMatch(query=query, fields=['course_title', 'term_title', 'instructor_full_name'],
-                             type="most_fields", fuzziness='AUTO:6,8', fuzzy_transpositions=True, cutoff_frequency=0.01)
-    search_query = Search(using=es, index='course').query(match_query).source("report_id")[page: page * per_page]
+    match_query = MultiMatch(query=query, fields=['course_title', 'term_title',
+                                                  'instructor_full_name'],
+                             type="most_fields", fuzziness='AUTO:6,8',
+                             fuzzy_transpositions=True, cutoff_frequency=0.01)
+    search_query = Search(using=es, index='course').query(match_query).source(
+        "report_id")[page: page * per_page]
     return search_query.execute()
 
 
