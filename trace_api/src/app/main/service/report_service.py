@@ -1,4 +1,3 @@
-from flask import session
 from sqlalchemy.orm import contains_eager
 from sqlalchemy_utils import sort_query
 
@@ -31,6 +30,10 @@ def get_all_course_reports(page, page_size, sort):
 
 def search_course_reports(query, page, page_size):
     return [Report.as_dict(obj) for obj in Report.search(query, page, page_size)]
+
+
+def get_course_report_highlights(query, page, page_size):
+    return {'highlights': Report.highlights(query, page, page_size)}
 
 
 def get_course_report(report_id):

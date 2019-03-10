@@ -1,9 +1,8 @@
 from flask_restplus import Resource
+from flask_restplus.inputs import boolean
 
-from ..service.report_service import get_all_terms, get_term, \
-    get_all_instructors, get_instructor, \
-    get_all_course_reports, get_course_report, search_course_reports, \
-    get_score_data
+from ..service.report_service import get_all_terms, get_term, get_all_instructors, get_instructor, \
+    get_all_course_reports, get_course_report, search_course_reports, get_score_data, get_course_report_highlights
 from ..util.dto import ReportDto
 
 api = ReportDto.api
@@ -26,6 +25,7 @@ list_args_parser.add_argument('orderBy', type=str,
 
 search_args_parser = list_args_parser.copy()
 search_args_parser.add_argument('q', type=str, help='Expression to search with')
+search_args_parser.add_argument('highlights', type=boolean, default=False, help='Whether to simply return highlights for search results')
 
 DEFAULT_PAGE_SIZE = 25
 
@@ -110,8 +110,13 @@ class CourseReportList(Resource):
         page = args.get('page') or 1
         page_size = args.get('pageSize') or DEFAULT_PAGE_SIZE
         order_by = args.get('orderBy') or 'ReportID'
+        highlights = args.get('highlights')
         if query:
-            results = search_course_reports(query, page, page_size)
+            if highlights:
+                results = get_course_report_highlights(query, page, page_size)
+            else:
+                results = search_course_reports(query, page, page_size)
+
         else:
             results = get_all_course_reports(page, page_size, order_by)
 
