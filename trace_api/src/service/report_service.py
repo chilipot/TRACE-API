@@ -31,6 +31,10 @@ def search_course_reports(query, page, page_size):
     return [Report.as_dict(obj) for obj in Report.search(query, page, page_size)]
 
 
+def get_course_report_highlights(query, page, page_size):
+    return {'highlights': Report.highlights(query, page, page_size)}
+
+
 def get_course_report(report_id):
     return Report.query.get(report_id)
 

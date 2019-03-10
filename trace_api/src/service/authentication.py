@@ -2,9 +2,10 @@ from flask_httpauth import HTTPTokenAuth
 import os
 from redis import Redis
 import secrets
-from flask import g, current_app
+from flask import g
+from src import redis_pool
 
-rds = Redis(connection_pool=current_app.redis_pool)
+rds = Redis(connection_pool=redis_pool)
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 

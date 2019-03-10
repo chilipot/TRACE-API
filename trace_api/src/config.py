@@ -2,13 +2,11 @@ import os, codecs, logging
 from cryptography.fernet import Fernet
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-cipher_suite = Fernet(codecs.encode(os.getenv('CIPHER_KEY')))
 
 
 def env_value(env, default=""):
-    return cipher_suite.decrypt(os.getenv(env, default).encode('ascii')).decode(
-        'ascii')
-    # return os.getenv(env)
+    cipher_suite = Fernet(codecs.encode(os.getenv('CIPHER_KEY')))
+    return cipher_suite.decrypt(os.getenv(env, default).encode('ascii')).decode('ascii')
 
 
 class Config:
@@ -28,7 +26,12 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SHOW_QUERIES_DEBUG = True
-    LOG_LEVEL = logging.DEBUG
+
+# class TestingConfig(Config):
+#     DEBUG = True
+#     TESTING = True
+#     PRESERVE_CONTEXT_ON_EXCEPTION = False
+#     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class ProductionConfig(Config):

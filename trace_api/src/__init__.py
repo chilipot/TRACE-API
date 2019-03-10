@@ -1,2 +1,2 @@
 import redis
-pool = redis.ConnectionPool(host='redis', port=6379, db=0)
+redis_pool = redis.ConnectionPool(host='redis', port=6379, db=0)
