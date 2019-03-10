@@ -23,12 +23,12 @@ list_args_parser.add_argument('orderBy', type=str,
                               help='Expression to order by. In format <property> for ascending,'
                                    + ' -<property> for descending, and <parent_prop>-<child_prop>'
                                    + ' to sort by a child property ascending or descending.'
-                                   + ' Ignored if "q" has a value (searching), where order will be'
-                                   + ' by search relevance.')
+                                   + ' Ignored if searching.')
 
 search_args_parser = list_args_parser.copy()
 search_args_parser.add_argument('q', type=str, help='Expression to search with')
-search_args_parser.add_argument('highlights', type=boolean, default=False, help='Whether to simply return highlights for search results')
+search_args_parser.add_argument('highlights', type=boolean, default=False, help='Whether to simply return highlights'
+                                                                                + ' for search results')
 
 DEFAULT_PAGE_SIZE = 25
 
@@ -68,7 +68,7 @@ class Term(Resource):
     Term Resource
     """
 
-    @auth.login_required
+    # @auth.login_required
     @api.doc('get a term')
     def get(self, term_id):
         """
@@ -158,7 +158,7 @@ class CourseReport(Resource):
     Course Resource
     """
 
-    @auth.login_required
+    # @auth.login_required
     @api.doc('get a report')
     def get(self, report_id):
         """
@@ -179,7 +179,7 @@ class ReportScores(Resource):
     Report Resource
     """
 
-    @auth.login_required
+    # @auth.login_required
     @api.doc('get scores of a report')
     def get(self, report_id):
         """

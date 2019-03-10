@@ -16,7 +16,6 @@ def configure_app(flask_app: Flask, config_name: str) -> Flask:
     flask_app.elasticsearch = Elasticsearch(
         [flask_app.config['ELASTICSEARCH_URL']]) if flask_app.config.get(
         'ELASTICSEARCH_URL') else None
-    flask_app.redis_pool = redis.ConnectionPool(host='redis', port=6379, db=0)
     db.init_app(flask_app)
     flask_app.register_blueprint(blueprint)
     flask_app.logger.info("Flask application created.")

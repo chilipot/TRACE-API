@@ -56,8 +56,10 @@ def get_instructor_from_query(query):
     if session_found_name is not None:
         entity = session_found_name
     else:
-        pldots = current_app.paralleldots
-        result = pldots.ner(query)
+        # TODO: Replace Old ParallelDots code with NER model
+        # pldots = current_app.paralleldots
+        # result = pldots.ner(query)
+        result = {}
         # result = {"entities": [{"name": "benjamin lerner"}]}  # Debug
         entities = [e['name'] for e in result.get('entities', [])]
         entity = entities[0] if len(entities) > 0 else None
