@@ -55,10 +55,10 @@ def get_instructor_from_query(query):
         pldots = current_app.paralleldots
         result = pldots.ner(query)
         # result = {"entities": [{"name": "benjamin lerner"}]}  # Debug
-        entities = [e['name'] for e in result['entities']]
+        entities = [e['name'] for e in result.get('entities', [])]
         entity = entities[0] if len(entities) > 0 else None
-        if len(entities) > 0 and entities[0] not in set(session.get('instructor_names')):
-            session.get('instructor_names').append(entities[0])
+        if len(entities) > 0 and entity not in set(session.get('instructor_names')):
+            session.get('instructor_names').append(entity)
             session.modified = True
     return pop_phrase_from_query(query, entity, case_sensitive=True)
 

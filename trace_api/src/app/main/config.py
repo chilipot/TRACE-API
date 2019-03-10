@@ -1,19 +1,20 @@
-import os, codecs
-from cryptography.fernet import Fernet
+import codecs
+import os
 from datetime import timedelta
+
+from cryptography.fernet import Fernet
 
 # uncomment the line below for postgres database url from environment variable
 # postgres_local_base = os.environ['DATABASE_URL']
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-cipher_suite = Fernet(codecs.encode(os.getenv('CIPHER_KEY')))
-
 
 ACCESS_EXPIRES = timedelta(minutes=15)
 REFRESH_EXPIRES = timedelta(days=30)
 
 
 def env_value(env, default=""):
+    cipher_suite = Fernet(codecs.encode(os.getenv('CIPHER_KEY')))
     return cipher_suite.decrypt(os.getenv(env, default).encode('ascii')).decode('ascii')
 
 
@@ -38,7 +39,8 @@ class DevelopmentConfig(Config):
     # SQLALCHEMY_DATABASE_URI = postgres_local_base
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SHOW_QUERIES_DEBUG = True
+    SHOW_QUERIES_DEBUG = False
+
 
 class TestingConfig(Config):
     DEBUG = True
