@@ -10,7 +10,7 @@ api = UserDto.api
 _user = UserDto.user
 
 
-@api.errorhandler
+@api.errorhandler(Exception)
 def user_error_handler(error):
     """
     Namespace error handler

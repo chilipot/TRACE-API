@@ -33,7 +33,7 @@ search_args_parser.add_argument('highlights', type=boolean, default=False, help=
 DEFAULT_PAGE_SIZE = 25
 
 
-@api.errorhandler
+@api.errorhandler(Exception)
 def report_error_handler(error):
     """
     Namespace error handler

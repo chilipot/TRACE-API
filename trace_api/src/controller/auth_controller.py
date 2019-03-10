@@ -8,7 +8,7 @@ api = AuthDto.api
 user_auth = AuthDto.user_auth
 
 
-@api.errorhandler
+@api.errorhandler(Exception)
 def auth_error_handler(error):
     """
     Namespace error handler
