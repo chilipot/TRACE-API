@@ -1,10 +1,11 @@
 from functools import reduce
-
 from elasticsearch_dsl import Search
 from elasticsearch_dsl.query import MultiMatch, Q, Match
 from flask import current_app, session
 from sqlalchemy.orm import contains_eager
+import logging
 
+log = logging.getLogger('flask.app')
 
 class SearchableMixin(object):
     @classmethod
@@ -13,6 +14,8 @@ class SearchableMixin(object):
         course_search, term = get_term_from_query(optimized_query)
         ids = [x['report_id'] for x in
                elastic_search(course_search, instructor, term, page, per_page)]
+        log.info("Querying an elasticsearch %s %s %s %s %s",
+                 course_search, instructor, term, page, per_page)
         return map_all_courses(cls, ids) if len(ids) > 0 else []
 
 

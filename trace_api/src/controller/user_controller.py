@@ -1,17 +1,26 @@
 from flask import request
 from flask_restplus import Resource
 
-from ..service.user_service import save_new_user, get_all_users, get_a_user
-from ..util.dto import UserDto
+from src.service.user_service import save_new_user, get_all_users, get_a_user
+from src.util.dto import UserDto
+from src.service.authentication import auth
+
 
 api = UserDto.api
 _user = UserDto.user
 
 
+@api.errorhandler
+def user_error_handler(error):
+    """
+    Namespace error handler
+    """
+    return {'message': f"#USER {str(error)}"}, getattr(error, 'code', 500)
+
+
 @api.route('/')
 class UserList(Resource):
     @api.doc('list_of_registered_users')
-    @api.marshal_list_with(_user, envelope='data')
     def get(self):
         """
         List all registered users
@@ -33,8 +42,8 @@ class UserList(Resource):
 @api.param('public_id', 'The User identifier')
 @api.response(404, 'User not found.')
 class User(Resource):
+    @auth.login_required
     @api.doc('get a user')
-    @api.marshal_with(_user)
     def get(self, public_id):
         """
         get a user given its identifier
