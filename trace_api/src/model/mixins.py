@@ -1,9 +1,11 @@
 from functools import reduce
-
 from elasticsearch_dsl import Search
 from elasticsearch_dsl.query import MultiMatch, Q, Match
 from flask import current_app, session
 from sqlalchemy.orm import contains_eager
+import logging
+
+log = logging.getLogger('flask.app')
 
 
 class SearchableMixin(object):
@@ -11,6 +13,8 @@ class SearchableMixin(object):
     def _perform_search(cls, expr, page, per_page, highlights=False):
         optimized_query, instructor = get_instructor_from_query(expr)
         course_search, term = get_term_from_query(optimized_query)
+        log.info("Querying an elasticsearch %s %s %s %s %s",
+                 course_search, instructor, term, page, per_page)
         return elastic_search(course_search, instructor, term, page, per_page, highlights=highlights)
 
     @classmethod
@@ -52,8 +56,10 @@ def get_instructor_from_query(query):
     if session_found_name is not None:
         entity = session_found_name
     else:
-        pldots = current_app.paralleldots
-        result = pldots.ner(query)
+        # TODO: Replace Old ParallelDots code with NER model
+        # pldots = current_app.paralleldots
+        # result = pldots.ner(query)
+        result = {}
         # result = {"entities": [{"name": "benjamin lerner"}]}  # Debug
         entities = [e['name'] for e in result.get('entities', [])]
         entity = entities[0] if len(entities) > 0 else None

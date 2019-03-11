@@ -1,9 +1,12 @@
 from flask_restplus import Resource
 from flask_restplus.inputs import boolean
 
-from ..service.report_service import get_all_terms, get_term, get_all_instructors, get_instructor, \
-    get_all_course_reports, get_course_report, search_course_reports, get_score_data, get_course_report_highlights
-from ..util.dto import ReportDto
+from src.service.report_service import get_all_terms, get_term, \
+    get_all_instructors, get_instructor, \
+    get_all_course_reports, get_course_report, search_course_reports, \
+    get_score_data, get_course_report_highlights
+from src.util.dto import ReportDto
+from src.service.authentication import auth
 
 api = ReportDto.api
 _term = ReportDto.term
@@ -20,21 +23,32 @@ list_args_parser.add_argument('orderBy', type=str,
                               help='Expression to order by. In format <property> for ascending,'
                                    + ' -<property> for descending, and <parent_prop>-<child_prop>'
                                    + ' to sort by a child property ascending or descending.'
-                                   + ' Ignored if "q" has a value (searching), where order will be'
-                                   + ' by search relevance.')
+                                   + ' Ignored if searching.')
 
 search_args_parser = list_args_parser.copy()
 search_args_parser.add_argument('q', type=str, help='Expression to search with')
-search_args_parser.add_argument('highlights', type=boolean, default=False, help='Whether to simply return highlights for search results')
+search_args_parser.add_argument('highlights', type=boolean, default=False, help='Whether to simply return highlights'
+                                                                                + ' for search results')
 
 DEFAULT_PAGE_SIZE = 25
 
 
-@api.route('term')
+@api.errorhandler(Exception)
+def report_error_handler(error):
+    """
+    Namespace error handler
+    """
+    return {'message': f"#REPORT {str(error)}"}, getattr(error, 'code', 500)
+
+
+@api.route('/term')
 @api.expect(list_args_parser)
 class TermList(Resource):
+    """
+    Term List Resource
+    """
+
     @api.doc('list_of_terms')
-    @api.marshal_list_with(_term, envelope='data')
     def get(self):
         """
         List all terms
@@ -46,15 +60,19 @@ class TermList(Resource):
         return get_all_terms(page, page_size, order_by)
 
 
-@api.route('term/<term_id>')
+@api.route('/term/<term_id>')
 @api.param('term_id', 'The Term identifier')
 @api.response(404, 'Term not found.')
 class Term(Resource):
+    """
+    Term Resource
+    """
+
+    # @auth.login_required
     @api.doc('get a term')
-    @api.marshal_with(_term)
     def get(self, term_id):
         """
-        get a term given its identifier
+        Term Manager Resource
         """
         term = get_term(term_id)
         if not term:
@@ -63,11 +81,14 @@ class Term(Resource):
             return term
 
 
-@api.route('instructor')
+@api.route('/instructor')
 @api.expect(list_args_parser)
 class InstructorList(Resource):
+    """
+    Instructor List Resource
+    """
+
     @api.doc('list_of_instructors')
-    # @api.marshal_list_with(_instructor, envelope='data') # <-  Marshalling is slow for long lists
     def get(self):
         """
         List all instructors
@@ -79,12 +100,15 @@ class InstructorList(Resource):
         return {'data': get_all_instructors(page, page_size, order_by)}
 
 
-@api.route('instructor/<instructor_id>')
+@api.route('/instructor/<instructor_id>')
 @api.param('instructor_id', 'The instructor identifier')
 @api.response(404, 'instructor not found.')
 class Instructor(Resource):
+    """
+    Instructor Resource
+    """
+
     @api.doc('get a instructor')
-    @api.marshal_with(_instructor)
     def get(self, instructor_id):
         """
         get an instructor given its identifier
@@ -96,11 +120,14 @@ class Instructor(Resource):
             return instructor
 
 
-@api.route('report')
+@api.route('/report')
 @api.expect(search_args_parser)
 class CourseReportList(Resource):
+    """
+    Course Report Resource
+    """
+
     @api.doc('list_of_reports')
-    # @api.marshal_list_with(_course, envelope='data')  # <- Marshalling is pretty slow with nested joins
     def get(self):
         """
         List many reports
@@ -123,12 +150,16 @@ class CourseReportList(Resource):
         return {"data": results}
 
 
-@api.route('report/<report_id>')
+@api.route('/report/<report_id>')
 @api.param('report_id', 'The Course Report identifier')
 @api.response(404, 'report not found.')
 class CourseReport(Resource):
+    """
+    Course Resource
+    """
+
+    # @auth.login_required
     @api.doc('get a report')
-    @api.marshal_with(_course)
     def get(self, report_id):
         """
         get a report given its identifier
@@ -140,12 +171,16 @@ class CourseReport(Resource):
             return report
 
 
-@api.route('report/<report_id>/scores')
+@api.route('/report/<report_id>/scores')
 @api.param('report_id', 'The Report identifier')
 @api.response(404, 'Report not found.')
 class ReportScores(Resource):
+    """
+    Report Resource
+    """
+
+    # @auth.login_required
     @api.doc('get scores of a report')
-    # @api.marshal_with(_report) # <- Once again, normal marshalling is slow
     def get(self, report_id):
         """
         get a report given its identifier

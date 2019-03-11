@@ -1,15 +1,14 @@
 from sqlalchemy.orm import contains_eager
 from sqlalchemy_utils import sort_query
-
-from app.main.model.tables import Term, Instructor, Report
+from src.model.tables import Term, Instructor, Report
 
 
 def get_all_terms(page, page_size, sort):
-    return sort_query(Term.query, sort).paginate(page, page_size, False).items
+    return [t.as_dict() for t in sort_query(Term.query, sort).paginate(page, page_size, False).items]
 
 
 def get_term(term_id):
-    return Term.query.get(term_id)
+    return Term.query.get(term_id).as_dict()
 
 
 def get_all_instructors(page, page_size, sort):
@@ -18,7 +17,7 @@ def get_all_instructors(page, page_size, sort):
 
 
 def get_instructor(instructor_id):
-    return Instructor.query.get(instructor_id)
+    return Instructor.query.get(instructor_id).as_dict()
 
 
 def get_all_course_reports(page, page_size, sort):
@@ -37,7 +36,7 @@ def get_course_report_highlights(query, page, page_size):
 
 
 def get_course_report(report_id):
-    return Report.query.get(report_id)
+    return Report.query.get(report_id).as_dict()
 
 
 def get_score_data(report_id):

@@ -4,8 +4,12 @@ from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, Unicode
 from sqlalchemy.dialects.mssql import BIT
 from sqlalchemy.orm import relationship
 
-from app.main.model.mixins.mixins import SearchableMixin
-from .. import db, flask_bcrypt
+from src.model.mixins import SearchableMixin
+from . import db
+from passlib.apps import custom_app_context as pwd_context
+import os
+
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 
 class Instructor(db.Model):
@@ -63,7 +67,7 @@ class User(db.Model):
     Admin = Column(BIT, nullable=False)
     PublicID = Column(Unicode(100), unique=True)
     Username = Column(Unicode(50), unique=True)
-    PasswordHash = Column(Unicode(100))
+    PasswordHash = Column(Unicode(200))
 
     @property
     def password(self):
@@ -71,12 +75,15 @@ class User(db.Model):
 
     @password.setter
     def password(self, password):
-        self.PasswordHash = flask_bcrypt.generate_password_hash(
-            password).decode('utf-8')
+        self.PasswordHash = pwd_context.hash(
+            password)
 
     def check_password(self, password):
-        return flask_bcrypt.check_password_hash(self.PasswordHash.encode(),
-                                                password)
+        return pwd_context.verify(password, self.PasswordHash)
+
+    def as_dict(self):
+        return {c.name: str(getattr(self, c.name)) for c in
+                self.__table__.columns}
 
     def __repr__(self):
         return "<User '{}'>".format(self.Username)
