@@ -1,8 +1,9 @@
-﻿/.idea
-config.ini
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
 *.pyc
-*.xlsx
-*.xls
-*.csv
-/venv
-/__pycache__
+/idea
