@@ -4,10 +4,10 @@ from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
 from elasticsearch_dsl.query import MultiMatch
 
-from trace.api import create_app
-from trace.api.model.course import Course
-from trace.api.model.instructor import Instructor
-from trace.api.model.term import Term
+from api import create_app
+from api.model.course import Course
+from api.model.instructor import Instructor
+from api.model.term import Term
 
 
 def connect_elasticsearch():
@@ -43,7 +43,8 @@ def create_index(es_object, index_name='course'):
                 "properties": {
                     "course_name": {
                         "type": "text",
-                        "search_analyzer": "std_english_analyzer"
+                        "search_analyzer": "english",
+                        "analyzer": "english"
                     },
                     "course_subject_code": {
                         "type": "text",
@@ -135,9 +136,10 @@ if __name__ == '__main__':
     app = create_app('dev')
     app.app_context().push()
     es = connect_elasticsearch()
+    # es.indices.delete(index='course', ignore=[400, 404])
     # create_index(es)
     # index_all_courses(es, 'course')
-    result = elasticsearch(es, 'math 3080 linear algebra judge')
+    result = elasticsearch(es, 'fundamentals the ben lerner')
     # print(json.dumps(result.meta.explanation.__dict__))
     result_objs = map_all_courses([x['report_id'] for x in result])
     print(json.dumps([x.as_dict() for x in result_objs]))
