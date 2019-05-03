@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, Unicode
 
 from api import db
-from api.model.mixins import Dictable
+from api.model.mixins import Dictable, DepartmentSearchable
 
 
-class Department(db.Model, Dictable):
+class Department(db.Model, Dictable, DepartmentSearchable):
     __tablename__ = 'department'
 
     id = Column(Integer, primary_key=True)

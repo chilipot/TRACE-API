@@ -32,7 +32,6 @@ def get_instructors():
 
         results = operation(**params)
 
-        # results = get_all_instructors(page, page_size, order_by, term_id, department_id)
         return responsify(results), 200
 
 
