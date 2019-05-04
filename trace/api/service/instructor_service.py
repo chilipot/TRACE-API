@@ -15,6 +15,14 @@ def get_all_instructors(page, page_size, sort, term_id=None, department_id=None)
     return [inst.as_dict() for inst in sql_results]
 
 
+def search_instructors(query, page, page_size):
+    return [obj.as_dict() for obj in Instructor.search(query, page, page_size)]
+
+
+def search_highlights_instructors(query, page, page_size):
+    return Instructor.highlights(query, page, page_size)
+
+
 def get_single_instructor(instructor_id):
     result = Instructor.query.get(instructor_id)
     return result.as_dict() if result is not None else result
