@@ -1,0 +1,81 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: ubuntu:14.04
+
+    working_directory: ~/trace
+
+    steps:
+      - checkout
+
+      - run:
+          name: "What branch am I on now?"
+          command: echo $CIRCLE_BRANCH $CIRCLE_PULL_REQUEST
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package-lock.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+          name: Install Serverless CLI and dependencies
+          command: |
+            sudo npm i -g serverless
+            npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-my-project-{{ checksum "package-lock.json" }}
+
+      - run:
+          - name: Install SLS Plugins
+          - command: sls plugin install -n serverless-wsgi serverless-python-requirements
+
+      - run:
+          name: Deploy application
+          command: sls deploy --stage master
+
+  deploy-integration:
+    docker:
+      - image: circleci/python3.7
+    working_directory: /tmp/trace
+    steps:
+      - run:
+          name: Deploy if tests pass and branch is integration
+          command: sls deploy --stage integration --user $DB_USERNAME --pass $DB_PASSWORD
+
+  deploy-master:
+    docker:
+      - image: circleci/python3.7
+    working_directory: /tmp/trace
+    steps:
+      - run:
+          name: Deploy if tests pass and branch is master
+          command: sls deploy --stage master --user $DB_USERNAME --pass $DB_PASSWORD
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              - master
+              - integration
+      - deploy-integration:
+          requires:
+            - build
+          filters:
+            branches:
+              only: integration
+      - deploy-master:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+
