@@ -4,10 +4,10 @@ from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
 from elasticsearch_dsl.query import MultiMatch
 
-from trace.api import create_app
-from trace.api.model.course import Course
-from trace.api.model.instructor import Instructor
-from trace.api.model.term import Term
+from api import create_app
+from api.model.course import Course
+from api.model import Instructor
+from api.model import Term
 
 
 def connect_elasticsearch():
