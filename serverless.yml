@@ -1,0 +1,51 @@
+service: trace
+
+provider:
+  name: aws
+  runtime: python3.6
+  stage: dev
+  region: us-east-1
+  memorySize: 128
+  timeout: 5
+  apiName: NU-TRACE
+  role: arn:aws:iam::317318443930:role/trace-dev-us-east-1-lambdaRole
+  endpointType: regional
+  vpc:
+    securityGroupIds:
+      - sg-0c5846cb50539bb03
+    subnetIds:
+      - subnet-28eb7306
+      - subnet-07072a4d
+  environment:
+    DB_USERNAME: ${opt:user}
+    DB_PASSWORD: ${opt:pass}
+
+package:
+  exclude:
+    - requirements.txt
+    - serverless.yml
+    - README.md
+    - package.json
+    - package-lock.json
+    - .circleci/**
+    - node_modules/**
+
+plugins:
+  - serverless-wsgi
+  - serverless-python-requirements
+
+custom:
+  wsgi:
+    app: ./api/manage.app
+    packRequirements: false
+
+functions:
+  app:
+    handler: wsgi_handler.handler
+    events:
+      - http: ANY /
+        cors: true
+        authorizer: aws_iam
+      - http: 'ANY {proxy+}'
+        cors: true
+        authorizer: aws_iam

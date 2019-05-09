@@ -4,7 +4,11 @@ from os import listdir
 
 import xlrd
 
+<<<<<<< HEAD:trace/pipeline/jsonprep.py
 from trace.pipeline.authentication import load_settings
+=======
+from pipeline import load_settings
+>>>>>>> integration:pipeline/jsonprep.py
 
 
 def initialize_sheet(file):
