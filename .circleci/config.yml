@@ -46,7 +46,7 @@ jobs:
       # Deploy
       - run:
           name: Deploy if tests pass and branch is master
-          command: sls deploy --stage master --user $DB_USERNAME --pass $DB_PASSWORD
+          command: sls deploy --stage $CIRCLE_BRANCH --user $DB_USERNAME --pass $DB_PASSWORD
 
 workflows:
   version: 2
@@ -55,6 +55,6 @@ workflows:
       - deploy_api:
           filters:
             branches:
-              - master
-              - integration
+              ignore:
+                - /feature.*/
 
