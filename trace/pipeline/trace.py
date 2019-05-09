@@ -8,9 +8,9 @@ import time
 
 from bs4 import BeautifulSoup
 
-import pipeline.authentication as auth
-import pipeline.complex_json_encoder as cje
-import pipeline.jsonprep as jsonprep
+import trace.pipeline.authentication as auth
+import trace.pipeline.complex_json_encoder as cje
+import trace.pipeline.jsonprep as jsonprep
 
 
 # ---------------------------------------------------
