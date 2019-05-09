@@ -1,0 +1,60 @@
+version: 2
+jobs:
+  deploy_api:
+    docker:
+      - image: circleci/python:3.6
+
+    working_directory: ~/trace
+
+    steps:
+      - checkout
+
+      - run:
+          name: "What branch am I on now?"
+          command: echo $CIRCLE_BRANCH $CIRCLE_PULL_REQUEST
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: Install node and npm
+          command: |
+            curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+            node --version && npm -v
+
+      - run:
+          name: Install Serverless CLI and dependencies
+          command: |
+            sudo npm i -g serverless
+            npm install
+
+      - run:
+          name: Install SLS Plugins
+          command: |
+            sls plugin install -n serverless-wsgi
+            sls plugin install -n serverless-python-requirements
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
+
+      # Deploy
+      - run:
+          name: Deploy if tests pass and branch is master
+          command: sls deploy --stage $CIRCLE_BRANCH --user $DB_USERNAME --pass $DB_PASSWORD
+
+workflows:
+  version: 2
+  deploy_trace:
+    jobs:
+      - deploy_api:
+          filters:
+            branches:
+              ignore:
+                - /feature.*/
+
