@@ -1,8 +1,8 @@
 import csv
 import json
 
-from pipeline import ComplexJSONSerializable, ComplexEncoder
-from pipeline import trace as trace
+from pipeline.complex_json_encoder import ComplexJSONSerializable, ComplexEncoder
+import pipeline.trace as trace
 
 
 class IDNameRetriever:
