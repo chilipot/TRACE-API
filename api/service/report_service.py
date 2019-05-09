@@ -1,14 +1,11 @@
-from sqlalchemy.orm import contains_eager
-from sqlalchemy_utils import sort_query
-
-from api.model.course import Course
-from api.model.score_data import ScoreData
+from api.model import Course, ScoreData, Term, Instructor
+from api.utils.helpers import sort_and_paginate
 
 
 def get_all_courses(page, page_size, order_by):
-    sql_results = sort_query(Course.query.join(Course.term).join(Course.instructor).options(
-        contains_eager(Course.term)).options(contains_eager(Course.instructor)), order_by).paginate(page, page_size,
-                                                                                                    False).items
+    query = Course.query.join(Term).join(Instructor)
+
+    sql_results = sort_and_paginate(query, order_by, page, page_size).all()
     return [obj.as_dict() for obj in sql_results]
 
 

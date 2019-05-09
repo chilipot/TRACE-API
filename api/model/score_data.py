@@ -1,11 +1,10 @@
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
-from api import db
-from api.model.mixins import Dictable
+from api.model.mixins import Base, Dictable
 
 
-class ScoreData(db.Model, Dictable):
+class ScoreData(Base, Dictable):
     __tablename__ = 'score_data'
 
     id = Column(Integer, primary_key=True)

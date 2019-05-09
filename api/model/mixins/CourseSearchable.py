@@ -15,5 +15,5 @@ class CourseSearchable(BaseSearchable):
         fields_list.append(fields_list[fields_list.index('course_subject_code')] + '^2')
 
         return MultiMatch(query=query, fields=fields_list,
-                                   type="most_fields", fuzziness='AUTO:6,8', fuzzy_transpositions=True,
-                                   cutoff_frequency=0.01)
+                          type="most_fields", fuzziness='AUTO:6,8', fuzzy_transpositions=True,
+                          cutoff_frequency=0.01)

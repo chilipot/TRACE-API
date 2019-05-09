@@ -1,11 +1,10 @@
 from sqlalchemy import Float, Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
-from api import db
-from api.model.mixins import Dictable
+from api.model.mixins import Base, Dictable
 
 
-class Question(db.Model, Dictable):
+class Question(Base, Dictable):
     __tablename__ = 'question'
 
     exclude_dict_fields = ['score_data']

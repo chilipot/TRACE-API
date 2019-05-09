@@ -1,10 +1,9 @@
 from sqlalchemy import Integer, Column, Unicode
 
-from api import db
-from api.model.mixins import Dictable
+from api.model.mixins import Base, Dictable
 
 
-class QuestionText(db.Model, Dictable):
+class QuestionText(Base, Dictable):
     __tablename__ = 'lookup_questiontext'
 
     id = Column(Integer, primary_key=True)

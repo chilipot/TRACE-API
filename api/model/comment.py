@@ -1,10 +1,9 @@
 from sqlalchemy import Column, Integer, Unicode, ForeignKey
 
-from api import db
-from api.model.mixins import Dictable
+from api.model.mixins import Base, Dictable
 
 
-class Comment(db.Model, Dictable):
+class Comment(Base, Dictable):
     __tablename__ = 'comment'
 
     id = Column(Integer, primary_key=True)

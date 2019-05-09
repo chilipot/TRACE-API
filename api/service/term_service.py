@@ -1,10 +1,11 @@
 from sqlalchemy_utils import sort_query
 
 from api.model.term import Term
+from api.utils.helpers import sort_and_paginate
 
 
-def get_all_terms(page, page_size, sort):
-    return [t.as_dict() for t in sort_query(Term.query, sort).paginate(page, page_size, False).items]
+def get_all_terms(page, page_size, order_by):
+    return [t.as_dict() for t in sort_and_paginate(Term.query, order_by, page, page_size).all()]
 
 
 def get_single_term(term_id):
