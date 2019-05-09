@@ -4,7 +4,7 @@ from os import listdir
 
 import xlrd
 
-from pipeline.authentication import load_settings
+from pipeline import load_settings
 
 
 def initialize_sheet(file):
