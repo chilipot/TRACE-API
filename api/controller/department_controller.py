@@ -45,4 +45,4 @@ def get_department(department_id):
         if not department:
             flask.abort(404)
         else:
-            return jsonify(department), 200
+            return responsify(department), 200

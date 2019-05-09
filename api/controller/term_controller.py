@@ -30,4 +30,4 @@ def get_term(term_id):
         if not term:
             flask.abort(404)
         else:
-            return jsonify(term), 200
+            return responsify(term), 200

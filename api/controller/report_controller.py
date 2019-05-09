@@ -43,7 +43,7 @@ def get_course(report_id):
         if not report:
             flask.abort(404)
         else:
-            return jsonify(report), 200
+            return responsify(report), 200
 
 
 @api.route('report/<int:report_id>/scores')
