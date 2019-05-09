@@ -43,8 +43,7 @@ jobs:
 
   deploy_integration:
     docker:
-      - image: circleci/python3.7
-    working_directory: /tmp/trace
+      - image: circleci/python3.6
     steps:
       - run:
           name: Deploy if tests pass and branch is integration
