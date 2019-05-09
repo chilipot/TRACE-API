@@ -51,7 +51,7 @@ jobs:
 
   deploy_master:
     docker:
-      - image: circleci/python3.7
+      - image: circleci/python3.6
     working_directory: /tmp/trace
     steps:
       - run:
