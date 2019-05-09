@@ -4,6 +4,7 @@ from flask import request, jsonify
 from api.controller import api
 from api.service.term_service import get_all_terms, get_single_term
 from api.utils.constants import DEFAULT_PAGE_SIZE
+from api.utils.helpers import responsify
 
 
 @api.route('term')
@@ -14,7 +15,10 @@ def get_terms():
         page = request.args.get('page', 1)
         page_size = request.args.get('pageSize', DEFAULT_PAGE_SIZE)
         order_by = request.args.get('orderBy', 'id')
-        return jsonify({'data': get_all_terms(page, page_size, order_by)}), 200
+
+        results = get_all_terms(page, page_size, order_by)
+
+        return responsify(results), 200
 
 
 @api.route('term/<int:term_id>')

@@ -2,14 +2,15 @@ from sqlalchemy_utils import sort_query
 
 from api.model.course import Course
 from api.model.department import Department
+from api.utils.helpers import sort_and_paginate
 
 
-def get_all_departments(page, page_size, sort, term_id=None):
+def get_all_departments(page, page_size, order_by, term_id=None):
     query = Department.query
     if term_id is not None:
         ids_subquery = Course.query.with_entities(Course.department_id).filter_by(term_id=term_id).distinct()
         query = query.filter(Department.id.in_(ids_subquery))
-    sql_results = sort_query(query, sort).paginate(page, page_size, False).items
+    sql_results = sort_and_paginate(query, order_by, page, page_size).all()
     return [dep.as_dict() for dep in sql_results]
 
 

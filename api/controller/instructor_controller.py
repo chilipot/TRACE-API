@@ -5,6 +5,7 @@ from api.controller import api
 from api.service.instructor_service import get_all_instructors, get_single_instructor, search_instructors, \
         search_highlights_instructors
 from api.utils.constants import DEFAULT_PAGE_SIZE
+from api.utils.helpers import responsify
 
 
 @api.route('instructor')
