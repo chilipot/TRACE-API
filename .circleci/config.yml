@@ -14,9 +14,9 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package-lock.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
 
       - run:
           name: Install Serverless CLI and dependencies
@@ -30,8 +30,8 @@ jobs:
           key: v1-my-project-{{ checksum "package-lock.json" }}
 
       - run:
-          - name: Install SLS Plugins
-          - command: sls plugin install -n serverless-wsgi serverless-python-requirements
+          name: Install SLS Plugins
+          command: sls plugin install -n serverless-wsgi serverless-python-requirements
 
       - run:
           name: Deploy application
