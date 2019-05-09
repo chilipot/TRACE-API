@@ -10,6 +10,5 @@ class InstructorSearchable(BaseSearchable):
 
     @classmethod
     def construct_query(cls, query, _fields_list):
-        print('constructed instructor query')
         return MultiMatch(query=query, fields=_fields_list,
                           type="cross_fields", minimum_should_match='50%')
