@@ -2,10 +2,10 @@ from sqlalchemy import Column, Integer, ForeignKey, Unicode
 from sqlalchemy.orm import relationship
 
 from api import db
-from api.model.mixins import Dictable, CourseSearchable
+from api.model.mixins import Dictable, Searchable
 
 
-class Course(db.Model, Dictable, CourseSearchable):
+class Course(db.Model, Dictable, Searchable):
     __tablename__ = 'course'
 
     exclude_dict_fields = ['score_data', 'comments']

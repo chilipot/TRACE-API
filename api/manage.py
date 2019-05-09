@@ -6,7 +6,7 @@ from api.controller import api
 app = create_app(os.getenv('APP_ENV') or 'dev')
 
 # Loads all routes into Blueprint
-from api.controller import instructor_controller, report_controller, term_controller, department_controller
+from api.controller import instructor_controller, report_controller, term_controller
 app.register_blueprint(api)
 
 app.app_context().push()
