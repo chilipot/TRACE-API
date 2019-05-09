@@ -8,4 +8,9 @@ def sort_and_paginate(query, order_by, _page, page_size):
 
 
 def responsify(results):
-    return Response(json.dumps({"data": results}), mimetype='application/json')
+    results_obj = {}
+    if isinstance(results, dict):
+        results_obj = results
+    elif isinstance(results, list):
+        results_obj = {"data": results}
+    return Response(json.dumps(results_obj), mimetype='application/json')
