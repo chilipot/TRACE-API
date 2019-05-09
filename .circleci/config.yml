@@ -30,14 +30,16 @@ jobs:
             sudo npm i -g serverless
             npm install
 
+      - run:
+          name: Install SLS Plugins
+          command: |
+            sls plugin install -n serverless-wsgi
+            sls plugin install -n serverless-python-requirements
+
       - save_cache:
           paths:
             - node_modules
           key: v1-my-project-{{ checksum "package-lock.json" }}
-
-      - run:
-          name: Install SLS Plugins
-          command: sls plugin install -n serverless-wsgi serverless-python-requirements
 
       - run:
           name: Deploy application
