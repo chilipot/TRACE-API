@@ -1,8 +1,10 @@
 version: 2
 jobs:
-  build:
+  deploy_api:
     docker:
       - image: circleci/python:3.6
+
+    working_directory: ~/trace
 
     steps:
       - checkout
@@ -39,40 +41,20 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: v1-my-project-{{ checksum "package-lock.json" }}
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
 
-  deploy_integration:
-    docker:
-      - image: circleci/python:3.6
-    steps:
-      - run:
-          name: Deploy if tests pass and branch is integration
-          command: sls deploy --stage integration --user ${DB_USERNAME} --pass ${DB_PASSWORD}
-
-  deploy_master:
-    docker:
-      - image: circleci/python:3.6
-    working_directory: /tmp/trace
-    steps:
+      # Deploy
       - run:
           name: Deploy if tests pass and branch is master
-          command: sls deploy --stage master --user ${DB_USERNAME} --pass ${DB_PASSWORD}
+          command: sls deploy --stage master --user $DB_USERNAME --pass $DB_PASSWORD
 
 workflows:
   version: 2
-  build_deploy:
+  deploy_trace:
     jobs:
-      - build
-      - deploy_integration:
-          requires:
-            - build
+      - deploy_api:
           filters:
             branches:
-              only: integration
-      - deploy_master:
-          requires:
-            - build
-          filters:
-            branches:
-              only: master
+              - master
+              - integration
 
