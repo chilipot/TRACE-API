@@ -44,4 +44,4 @@ def get_instructor(instructor_id):
         if not instructor:
             flask.abort(404)
         else:
-            return jsonify(instructor), 200
+            return responsify(instructor), 200

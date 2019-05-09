@@ -1,6 +1,8 @@
 from elasticsearch_dsl import Search
 from flask import current_app
 
+from api import elasticsearch
+
 
 class BaseSearchable(object):
     # These should all be defined in a subclass
@@ -47,7 +49,7 @@ class BaseSearchable(object):
     @classmethod
     def elastic_search(cls, query, fields_list, page, per_page, id_field_name, index, highlights=False):
         full_query = cls.construct_query(query, fields_list)
-        search_query = Search(using=current_app.elasticsearch, index=index).query(full_query).source(id_field_name)
+        search_query = Search(using=elasticsearch, index=index).query(full_query).source(id_field_name)
         if highlights:
             for field in fields_list:
                 search_query = search_query.highlight(field)
