@@ -4,7 +4,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
 from elasticsearch_dsl.query import MultiMatch, Match, Q
 
-from api import create_app
+from api import create_app, db_session
 from api.model.department import Department
 from api.model.instructor import Instructor
 
@@ -12,7 +12,7 @@ from api.model.instructor import Instructor
 def connect_elasticsearch():
     _es = None
     _es = Elasticsearch(
-        "https://search-nutrace-q4krcpst6ceoktoppbgbvgrjyy.us-east-1.es.amazonaws.com/")
+        "https://vpc-nu-trace-b7xszvmk2oxocak5pwp6n4d4yy.us-east-1.es.amazonaws.com/")
     if _es.ping():
         print('Yay Connect')
     else:
@@ -119,13 +119,14 @@ def elasticsearch(es, query, page=0, per_page=25):
 
 
 if __name__ == '__main__':
-    app = create_app('dev')
-    app.app_context().push()
+    db_sess = db_session
+    # app = create_app('dev')
+    # app.app_context().push()
     es = connect_elasticsearch()
     # es.indices.delete(index='department', ignore=[400, 404])
     # create_department_index(es)
     # index_all_departments(es, 'department')
-    result = elasticsearch(es, 'IS')
+    result = elasticsearch(es, 'heal sci')
     # print(json.dumps(result.meta.explanation.__dict__))
     result_objs = map_all_departments([x['department_id'] for x in result])
     print(json.dumps([x.as_dict() for x in result_objs]))
