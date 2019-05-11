@@ -1,5 +1,3 @@
-from sqlalchemy_utils import sort_query
-
 from api.model.course import Course
 from api.model.instructor import Instructor
 from api.utils.helpers import sort_and_paginate

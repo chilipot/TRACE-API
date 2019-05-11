@@ -1,5 +1,3 @@
-from sqlalchemy_utils import sort_query
-
 from api.model.term import Term
 from api.utils.helpers import sort_and_paginate
 
