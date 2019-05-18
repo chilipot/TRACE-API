@@ -1,2 +1,5 @@
+from api.model.mixins.BaseModel import Base
+from api.model.mixins.CourseSearchable import CourseSearchable
+from api.model.mixins.DepartmentSearchable import DepartmentSearchable
 from api.model.mixins.Dictable import Dictable
-from api.model.mixins.Searchable import Searchable
+from api.model.mixins.InstructorSearchable import InstructorSearchable

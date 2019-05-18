@@ -1,11 +1,10 @@
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
-from api import db
-from api.model.mixins import Dictable
+from api.model.mixins import Base, Dictable
 
 
-class ScoreData(db.Model, Dictable):
+class ScoreData(Base, Dictable):
     __tablename__ = 'score_data'
 
     id = Column(Integer, primary_key=True)
@@ -21,5 +20,6 @@ class ScoreData(db.Model, Dictable):
     def as_dict(self, include_pk=True):
         fields = super(ScoreData, self).as_dict(include_pk)
         fields['id'] = fields.get('course', {}).get('id')
-        fields['comments'] = [comment.as_dict(include_pk=False) for comment in self.course.comments]
+        # Make cleaner
+        fields['comments'] = [comment._dict_or_collapsed(comment) for comment in self.course.comments]
         return fields
