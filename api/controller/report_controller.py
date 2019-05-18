@@ -46,10 +46,10 @@ def get_course(report_id):
             return responsify(report), 200
 
 
-@api.route('report/<int:report_id>/scores')
+@api.route('course/<int:report_id>/scores')
 def get_scores(report_id):
         """
-        Get a report and scores given its identifier
+        Get a course report and scores given its identifier
         """
         report = get_single_report(report_id)
         if not report:

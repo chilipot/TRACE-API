@@ -20,5 +20,6 @@ class ScoreData(Base, Dictable):
     def as_dict(self, include_pk=True):
         fields = super(ScoreData, self).as_dict(include_pk)
         fields['id'] = fields.get('course', {}).get('id')
-        fields['comments'] = [comment.as_dict(include_pk=False) for comment in self.course.comments]
+        # Make cleaner
+        fields['comments'] = [comment._dict_or_collapsed(comment) for comment in self.course.comments]
         return fields
