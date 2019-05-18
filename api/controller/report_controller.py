@@ -21,8 +21,6 @@ def get_courses():
 
     facets = get_id_facets_from_request(['department_id', 'instructor_id', 'term_id'])
 
-    print(facets)
-
     params = dict(query=query, page=page, page_size=page_size, order_by=order_by, facets=facets)
 
     operation = get_all_courses
@@ -50,10 +48,10 @@ def get_course(report_id):
         return responsify(report), 200
 
 
-@api.route('report/<int:report_id>/scores')
+@api.route('course/<int:report_id>/scores')
 def get_scores(report_id):
     """
-    Get a report and scores given its identifier
+    Get a course report and scores given its identifier
     """
     report = get_single_report(report_id)
     if not report:

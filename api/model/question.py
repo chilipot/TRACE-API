@@ -11,7 +11,7 @@ class Question(Base, Dictable):
 
     id = Column(Integer, primary_key=True)
     data_id = Column(Integer, ForeignKey('score_data.id'), nullable=False)
-    question_text_id = Column(Integer, ForeignKey('lookup_questiontext.id'), nullable=False)
+    lookup_question_id = Column(Integer, ForeignKey('lookup_question.id'), nullable=False)
     response_count = Column(Integer, nullable=False)
     response_rate = Column(Float)
     mean = Column(Float)
@@ -19,5 +19,5 @@ class Question(Base, Dictable):
     std_dev = Column(Float)
 
     score_data = relationship('ScoreData', back_populates="questions")
-    lookup_text = relationship('QuestionText', lazy='joined')
+    lookup_question = relationship('LookupQuestion', lazy='joined')
     answers = relationship('Answer', back_populates='question', lazy='joined')
