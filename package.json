@@ -3,7 +3,7 @@
   "description": "TRACE API Implementation",
   "version": "0.1.0",
   "dependencies": {
-    "serverless": "1.41.1"
+    "serverless": "1.43.0"
   },
   "devDependencies": {
     "serverless-python-requirements": "^4.3.0",
