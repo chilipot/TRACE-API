@@ -9,7 +9,7 @@ provider:
   timeout: 5
   apiName: NU-TRACE
   role: arn:aws:iam::317318443930:role/trace-dev-us-east-1-lambdaRole
-  endpointType: regional
+  endpointType: REGIONAL
   path: /app/v1
   vpc:
     securityGroupIds:
@@ -18,36 +18,50 @@ provider:
       - subnet-28eb7306
       - subnet-07072a4d
   environment:
-    DB_USERNAME: ${opt:user}
-    DB_PASSWORD: ${opt:pass}
     APP_ENVIRONMENT: prod
+    SECRET_KEY: my_secret_key
+    DB_NAME: ${self:custom.name}
+    DB_HOST: ${self:custom.host}
+    SQLALCHEMY_DATABASE_URI: ${self:custom.uri}
+    ELASTICSEARCH_URL: https://vpc-nu-trace-b7xszvmk2oxocak5pwp6n4d4yy.us-east-1.es.amazonaws.com/
+    SHOW_QUERIES_DEBUG: false
+    DEBUG: false
+    LOG_LEVEL: 20
+
 
 package:
   exclude:
-    - requirements.txt
-    - serverless.yml
-    - README.md
-    - package.json
-    - package-lock.json
-    - .circleci/**
-    - node_modules/**
+    - ./**
+  include:
+    - api/**
 
 custom:
   basePath: api/v1
+  name: trace
+  host: nu-trace.clxfur70m41w.us-east-1.rds.amazonaws.com
+  uri: mysql+pymysql://${opt:user}:${opt:pass}@${self:custom.host}:3306/${self:custom.name}
+
 
 plugins:
   - serverless-python-requirements
+  - serverless-offline
 
 functions:
   term:
-    handler: api.controller.term_controller.get_terms
+    handler: api.term.controller.get_terms
     events:
       - http:
           path: ${self:custom.basePath}/term
           method: get
+          request:
+            parameters:
+              querystrings:
+                page: false
+                pageSize: false
+                orderBy: false
 
   getterm:
-    handler: api.controller.term_controller.get_term
+    handler: api.term.controller.get_term
     events:
       - http:
           path: ${self:custom.basePath}/term/{id}
@@ -58,14 +72,24 @@ functions:
                 id: true
 
   instructor:
-    handler: api.controller.instructor_controller.get_instructors
+    handler: api.instructor.controller.get_instructors
     events:
       - http:
           path: ${self:custom.basePath}/instructor
           method: get
+          parameters:
+            paths:
+              querystrings:
+                page: false
+                page_size: false
+                orderBy: false
+                term_id: false
+                department_id: false
+                query: false
+                highlights: false
 
   getinstructor:
-    handler: api.controller.instructor_controller.get_instructor
+    handler: api.instructor.controller.get_instructor
     events:
       - http:
           path: ${self:custom.basePath}/instructor/{id}
@@ -76,14 +100,22 @@ functions:
                 id: true
 
   course:
-    handler: api.controller.report_controller.get_courses
+    handler: api.course.controller.get_courses
     events:
       - http:
           path: ${self:custom.basePath}/course
           method: get
+          request:
+            parameters:
+              querystrings:
+                query: false
+                page: false
+                pageSize: false
+                orderBy: false
+                highlights: false
 
   getcourse:
-    handler: api.controller.report_controller.get_course
+    handler: api.course.controller.get_course
     events:
       - http:
           path: ${self:custom.basePath}/course/{id}
@@ -94,7 +126,7 @@ functions:
                 id: true
 
   getscores:
-    handler: api.controller.report_controller.get_scores
+    handler: api.course.controller.get_scores
     events:
       - http:
           path: ${self:custom.basePath}/course/{id}/scores
@@ -105,28 +137,49 @@ functions:
                 id: true
 
   question:
-    handler: api.controller.survey_controller.get_questions
+    handler: api.survey.controller.get_questions
     events:
       - http:
           path: ${self:custom.basePath}/question
           method: get
+          request:
+            parameters:
+              querystrings:
+                page: false
+                pageSize: false
+                orderBy: false
 
   category:
-    handler: api.controller.survey_controller.get_categories
+    handler: api.survey.controller.get_categories
     events:
       - http:
           path: ${self:custom.basePath}/category
           method: get
+          request:
+            parameters:
+              querystrings:
+                page: false
+                pageSize: false
+                orderBy: false
 
   department:
-    handler: api.controller.department_controller.get_departments
+    handler: api.department.controller.get_departments
     events:
       - http:
           path: ${self:custom.basePath}/department
           method: get
+          request:
+            parameters:
+              querystrings:
+                page: false
+                pageSize: false
+                orderBy: false
+                term_id: false
+                query: false
+                highlights: false
 
   getdepartment:
-    handler: api.controller.department_controller.get_department
+    handler: api.department.controller.get_department
     events:
       - http:
           path: ${self:custom.basePath}/department/{id}

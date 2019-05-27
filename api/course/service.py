@@ -1,20 +1,20 @@
-from api.model import Course, ScoreData, Term, Instructor
-from api.utils.helpers import sort_and_paginate, apply_sql_facets
+from api.model import Course, ScoreData, Term, Instructor, Department
 
 
 def get_all_courses(page, page_size, order_by, facets={}):
+    from api.utils.helpers import sort_and_paginate, apply_sql_facets
     query = Course.query
     if facets:
         query = apply_sql_facets(Course, query, facets)
 
-    query = query.join(Term).join(Instructor)
+    query = query.join(Term).join(Instructor).join(Department)
 
     sql_results = sort_and_paginate(query, order_by, page, page_size).all()
-    return [obj.as_dict() for obj in sql_results]
+    return sql_results
 
 
 def search_courses(query, page, page_size, facets={}):
-    return [obj.as_dict() for obj in Course.search(query, page, page_size, facets=facets)]
+    return (obj.as_dict() for obj in Course.search(query, page, page_size, facets=facets))
 
 
 def search_highlights_courses(query, page, page_size, facets={}):
@@ -22,7 +22,7 @@ def search_highlights_courses(query, page, page_size, facets={}):
 
 
 def get_single_course(report_id):
-    result = Course.query.get(report_id)
+    result = Course.query.get(report_id).join(Term).join(Instructor).join(Department)
     return result.as_dict() if result is not None else result
 
 

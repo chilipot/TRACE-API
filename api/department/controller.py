@@ -1,7 +1,7 @@
-from api.service.department_service import get_all_departments, get_single_department, search_departments, \
+from api.department.service import get_all_departments, get_single_department, search_departments, \
     search_highlights_departments
 from api.utils.constants import DEFAULT_PAGE_SIZE
-from api.utils.helpers import responsify, Serverless
+from api.utils.helpers import Serverless
 
 
 @Serverless.route
@@ -29,7 +29,7 @@ def get_departments():
     results = operation(**params)
 
     # results = get_all_departments(page, page_size, order_by, term_id)
-    return responsify(results, 200)
+    return results, 200
 
 
 @Serverless.route
@@ -41,4 +41,4 @@ def get_department(department_id):
     if not department:
         Serverless.abort(404)
     else:
-        return responsify(department, 200)
+        return department, 200

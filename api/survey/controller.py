@@ -1,6 +1,6 @@
-from api.service.survey_service import get_all_questions, get_all_categories
+from api.survey.service import get_all_questions, get_all_categories
 from api.utils.constants import DEFAULT_PAGE_SIZE
-from api.utils.helpers import responsify, get_id_facets_from_request, Serverless
+from api.utils.helpers import get_id_facets_from_request, Serverless
 
 
 @Serverless.route
@@ -16,7 +16,7 @@ def get_questions():
 
     results = get_all_questions(page, page_size, order_by, facets)
 
-    return responsify(results, 200)
+    return results, 200
 
 
 @Serverless.route
@@ -30,4 +30,4 @@ def get_categories():
 
     results = get_all_categories(page, page_size, order_by)
 
-    return responsify(results, 200)
+    return results, 200

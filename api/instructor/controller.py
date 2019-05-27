@@ -1,7 +1,7 @@
-from api.service.instructor_service import get_all_instructors, get_single_instructor, search_instructors, \
+from api.instructor.service import get_all_instructors, get_single_instructor, search_instructors, \
     search_highlights_instructors
 from api.utils.constants import DEFAULT_PAGE_SIZE
-from api.utils.helpers import responsify, Serverless
+from api.utils.helpers import Serverless
 
 
 @Serverless.route
@@ -29,7 +29,7 @@ def get_instructors():
 
     results = operation(**params)
 
-    return responsify(results, 200)
+    return results, 200
 
 
 @Serverless.route
@@ -41,4 +41,4 @@ def get_instructor(instructor_id):
     if not instructor:
         Serverless.abort(404)
     else:
-        return responsify(instructor, 200)
+        return instructor, 200

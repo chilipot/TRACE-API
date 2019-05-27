@@ -1,6 +1,6 @@
-from api.service.term_service import get_all_terms, get_single_term
+from api.term.service import get_all_terms, get_single_term
 from api.utils.constants import DEFAULT_PAGE_SIZE
-from api.utils.helpers import responsify, Serverless
+from api.utils.helpers import Serverless
 
 
 @Serverless.route
@@ -13,7 +13,7 @@ def get_terms():
     order_by = Serverless.args.get('orderBy', 'id', str)
 
     results = get_all_terms(page, page_size, order_by)
-    return responsify(results, 200)
+    return results, 200
 
 
 @Serverless.route
@@ -23,7 +23,7 @@ def get_term(term_id):
     """
     term = get_single_term(term_id)
     if term:
-        return responsify(term, 200)
+        return term, 200
     else:
         return Serverless.abort(404)
 

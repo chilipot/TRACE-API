@@ -1,7 +1,7 @@
-from api.service.report_service import get_all_courses, get_single_course, get_single_report, \
+from api.course.service import get_all_courses, get_single_course, get_single_report, \
     search_courses, search_highlights_courses
 from api.utils.constants import DEFAULT_PAGE_SIZE
-from api.utils.helpers import responsify, get_id_facets_from_request, Serverless
+from api.utils.helpers import get_id_facets_from_request, Serverless
 
 
 @Serverless.route
@@ -28,8 +28,7 @@ def get_courses():
 
     results = operation(**params)
 
-    # jsonify made this slow :(
-    return responsify(results, 200)
+    return results, 200
 
 
 @Serverless.route
@@ -41,7 +40,7 @@ def get_course(report_id):
     if not report:
         Serverless.abort(404)
     else:
-        return responsify(report), 200
+        return report, 200
 
 
 @Serverless.route
@@ -54,4 +53,4 @@ def get_scores(report_id):
         Serverless.abort(404)
     else:
         # Avoiding jsonify because it can be slow
-        return responsify(report, 200)
+        return report, 200

@@ -34,7 +34,4 @@ class Dictable(object):
 
     @staticmethod
     def _dict_or_collapsed(obj):
-        if obj.dict_collapse:
-            return obj.as_dict(include_pk=False).popitem()[1]
-        else:
-            return obj.as_dict(include_pk=obj.dict_carry_pk)
+        return obj.as_dict(include_pk=False).popitem()[1] if obj.dict_collapse else obj.as_dict(include_pk=obj.dict_carry_pk)
