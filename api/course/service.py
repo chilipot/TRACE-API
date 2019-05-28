@@ -10,7 +10,7 @@ def get_all_courses(page, page_size, order_by, facets={}):
     query = query.join(Term).join(Instructor).join(Department)
 
     sql_results = sort_and_paginate(query, order_by, page, page_size).all()
-    return sql_results
+    return (obj.as_dict() for obj in sql_results)
 
 
 def search_courses(query, page, page_size, facets={}):

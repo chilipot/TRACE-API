@@ -2,7 +2,7 @@ service: trace
 
 provider:
   name: aws
-  runtime: python3.7
+  runtime: python3.6
   stage: dev
   region: us-east-1
   memorySize: 128
@@ -44,7 +44,7 @@ custom:
 
 plugins:
   - serverless-python-requirements
-  - serverless-offline
+  - serverless-offline-python
 
 functions:
   term:

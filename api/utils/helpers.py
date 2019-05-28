@@ -1,6 +1,7 @@
 import json
 import os
 import logging
+from types import GeneratorType
 
 from sqlalchemy_utils import sort_query
 
@@ -8,17 +9,18 @@ from sqlalchemy_utils import sort_query
 def responsify(body, code, headers=None):
     default_headers = {"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": True}
     default_headers.update(headers) if headers else None
-
     results_obj = {}
     if isinstance(body, dict):
         results_obj = body
     elif isinstance(body, list) or isinstance(body, str):
         results_obj = {"data": body}
+    elif isinstance(body, GeneratorType):
+        results_obj = {"data": [item for item in body]}  # Unpack generator
     return {
-        'statusCode': code,
+        "statusCode": code,
         "isBase64Encoded": False,
-        'headers': default_headers,
-        'body': json.dumps(results_obj)
+        "headers": default_headers,
+        "body": json.dumps(results_obj)
     }
 
 

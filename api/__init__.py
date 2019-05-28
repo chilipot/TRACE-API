@@ -3,10 +3,6 @@ import os
 from elasticsearch import Elasticsearch
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
-import logging
-
-logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(20)
 
 engine = create_engine(os.getenv('SQLALCHEMY_DATABASE_URI'))
 
