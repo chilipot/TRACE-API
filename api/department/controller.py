@@ -1,24 +1,20 @@
-import flask
-from flask import request
-
-from api.controller import api
-from api.service.department_service import get_all_departments, get_single_department, search_departments, \
+from api.department.service import get_all_departments, get_single_department, search_departments, \
     search_highlights_departments
 from api.utils.constants import DEFAULT_PAGE_SIZE
-from api.utils.helpers import responsify
+from api.utils.helpers import Serverless
 
 
-@api.route('department')
+@Serverless.route
 def get_departments():
     """
     List all departments
     """
-    page = request.args.get('page', 1, int)
-    page_size = request.args.get('pageSize', DEFAULT_PAGE_SIZE, int)
-    order_by = request.args.get('orderBy', 'id', str)
-    term_id = request.args.get('term_id', None, str)
-    query = request.args.get('query', '', str)
-    highlights = request.args.get('highlights', False, bool)
+    page = Serverless.args.get('page', 1, int)
+    page_size = Serverless.args.get('pageSize', DEFAULT_PAGE_SIZE, int)
+    order_by = Serverless.args.get('orderBy', 'id', str)
+    term_id = Serverless.args.get('term_id', None, str)
+    query = Serverless.args.get('query', '', str)
+    highlights = Serverless.args.get('highlights', False, bool)
 
     params = dict(query=query, page=page, page_size=page_size, order_by=order_by, term_id=term_id)
 
@@ -33,16 +29,16 @@ def get_departments():
     results = operation(**params)
 
     # results = get_all_departments(page, page_size, order_by, term_id)
-    return responsify(results), 200
+    return results, 200
 
 
-@api.route('department/<int:department_id>')
+@Serverless.route
 def get_department(department_id):
     """
     get a department given its identifier
     """
     department = get_single_department(department_id)
     if not department:
-        flask.abort(404)
+        Serverless.abort(404)
     else:
-        return responsify(department), 200
+        return department, 200

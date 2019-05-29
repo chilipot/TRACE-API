@@ -1,25 +1,21 @@
-import flask
-from flask import request
-
-from api.controller import api
-from api.service.instructor_service import get_all_instructors, get_single_instructor, search_instructors, \
+from api.instructor.service import get_all_instructors, get_single_instructor, search_instructors, \
     search_highlights_instructors
 from api.utils.constants import DEFAULT_PAGE_SIZE
-from api.utils.helpers import responsify
+from api.utils.helpers import Serverless
 
 
-@api.route('instructor')
+@Serverless.route
 def get_instructors():
     """
     List all instructors
     """
-    page = request.args.get('page', 1, int)
-    page_size = request.args.get('pageSize', DEFAULT_PAGE_SIZE, int)
-    order_by = request.args.get('orderBy', 'id', str)
-    term_id = request.args.get('term_id', None, str)
-    department_id = request.args.get('department_id', None, str)
-    query = request.args.get('query', '', str)
-    highlights = request.args.get('highlights', False, bool)
+    page = Serverless.args.get('page', 1, int)
+    page_size = Serverless.args.get('pageSize', DEFAULT_PAGE_SIZE, int)
+    order_by = Serverless.args.get('orderBy', 'id', str)
+    term_id = Serverless.args.get('term_id', None, str)
+    department_id = Serverless.args.get('department_id', None, str)
+    query = Serverless.args.get('query', '', str)
+    highlights = Serverless.args.get('highlights', False, bool)
 
     params = dict(query=query, page=page, page_size=page_size, order_by=order_by, term_id=term_id,
                   department_id=department_id)
@@ -33,16 +29,16 @@ def get_instructors():
 
     results = operation(**params)
 
-    return responsify(results), 200
+    return results, 200
 
 
-@api.route('instructor/<int:instructor_id>')
+@Serverless.route
 def get_instructor(instructor_id):
     """
     Get an instructor given its identifier
     """
     instructor = get_single_instructor(instructor_id)
     if not instructor:
-        flask.abort(404)
+        Serverless.abort(404)
     else:
-        return responsify(instructor), 200
+        return instructor, 200

@@ -11,11 +11,11 @@ def get_all_instructors(page, page_size, order_by, term_id=None, department_id=N
         ids_subquery = Course.query.with_entities(Course.instructor_id).filter_by(**filter_params).distinct()
         query = query.filter(Instructor.id.in_(ids_subquery))
     sql_results = sort_and_paginate(query, order_by, page, page_size).all()
-    return [inst.as_dict() for inst in sql_results]
+    return (inst.as_dict() for inst in sql_results)
 
 
 def search_instructors(query, page, page_size):
-    return [obj.as_dict() for obj in Instructor.search(query, page, page_size)]
+    return (obj.as_dict() for obj in Instructor.search(query, page, page_size))
 
 
 def search_highlights_instructors(query, page, page_size):

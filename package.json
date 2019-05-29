@@ -1,13 +1,16 @@
 {
   "name": "trace-api",
   "description": "TRACE API Implementation",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "dependencies": {
-    "serverless": "1.41.1"
+    "request": "^2.88.0",
+    "serverless": "1.41.1",
+    "serverless-offline": "^4.10.3"
   },
   "devDependencies": {
-    "serverless-python-requirements": "^4.3.0",
-    "serverless-wsgi": "^1.7.2"
+    "serverless-offline-python": "^3.22.0",
+    "serverless-plugin-simulate": "0.0.17",
+    "serverless-python-requirements": "^4.3.0"
   },
   "main": "index.js",
   "scripts": {
