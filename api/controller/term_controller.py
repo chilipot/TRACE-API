@@ -2,7 +2,7 @@ import flask
 from flask import request
 
 from api.controller import api
-from api.service.term_service import get_all_terms, get_single_term
+from api.service.term_service import get_all_terms, get_single_term, get_single_term_categories
 from api.utils.constants import DEFAULT_PAGE_SIZE
 from api.utils.helpers import responsify
 
@@ -31,3 +31,14 @@ def get_term(term_id):
         flask.abort(404)
     else:
         return responsify(term), 200
+
+
+@api.route('term/<int:term_id>/categories')
+def get_term_categories(term_id):
+    """
+    get a term given its identifier and return the
+    categories of questions associated with it
+    """
+    results = get_single_term_categories(term_id)
+
+    return responsify(results), 200

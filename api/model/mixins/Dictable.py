@@ -9,7 +9,9 @@ class Dictable(object):
     # Override to include pk when as_dict() is called (only considered when being nested)
     dict_carry_pk = True
 
-    def as_dict(self, include_pk=True):
+    def _as_dict_recur(self, models_hit, include_pk=True):
+        models_hit = models_hit + [self.__class__]
+
         fks = [fk.parent.name for fk in self.__table__.foreign_keys]
         pk = self.__table__.primary_key.columns.values()[0].name
 
@@ -22,19 +24,22 @@ class Dictable(object):
 
         for relationship in self.__mapper__.relationships:
             rel = relationship.key
-            if rel not in self.exclude_dict_fields:
+            if rel not in self.exclude_dict_fields and relationship.entity.class_ not in models_hit:
                 rel_map = getattr(self, rel)
                 if isinstance(rel_map, InstrumentedList):
-                    fields[rel] = [self._dict_or_collapsed(el) for el in rel_map]
+                    fields[rel] = [self._dict_or_collapsed(el, models_hit) for el in rel_map]
                 else:
                     rel_fixed_name = rel.replace('lookup_', '') if rel.startswith('lookup_') else rel
-                    fields[rel_fixed_name] = self._dict_or_collapsed(rel_map)
+                    fields[rel_fixed_name] = self._dict_or_collapsed(rel_map, models_hit)
 
         return fields
 
+    def as_dict(self, include_pk=True):
+        return self._as_dict_recur([self.__class__], include_pk)
+
     @staticmethod
-    def _dict_or_collapsed(obj):
+    def _dict_or_collapsed(obj, models_hit=[]):
         if obj.dict_collapse:
-            return obj.as_dict(include_pk=False).popitem()[1]
+            return obj._as_dict_recur(models_hit=models_hit, include_pk=False).popitem()[1]
         else:
-            return obj.as_dict(include_pk=obj.dict_carry_pk)
+            return obj._as_dict_recur(models_hit=models_hit, include_pk=obj.dict_carry_pk)

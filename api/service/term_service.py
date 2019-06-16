@@ -9,3 +9,12 @@ def get_all_terms(page, page_size, order_by):
 def get_single_term(term_id):
     result = Term.query.get(term_id)
     return result.as_dict() if result is not None else result
+
+
+def get_single_term_categories(term_id):
+    term_result = Term.query.get(term_id)
+    if term_result:
+        result = [c.as_dict() for c in term_result.categories]
+    else:
+        result = []
+    return result
