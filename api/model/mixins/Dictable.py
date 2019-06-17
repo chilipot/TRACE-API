@@ -9,7 +9,7 @@ class Dictable(object):
     # Override to include pk when as_dict() is called (only considered when being nested)
     dict_carry_pk = True
 
-    def _as_dict_recur(self, models_hit, include_pk=True):
+    def _as_dict_recur(self, models_hit, include_pk=True, override_exclude_dict_fields=[]):
         models_hit = models_hit + [self.__class__]
 
         fks = [fk.parent.name for fk in self.__table__.foreign_keys]
@@ -22,9 +22,11 @@ class Dictable(object):
         fields = {c.name: getattr(self, c.name) for c in self.__table__.columns
                   if c.name not in excluded_keys}
 
+        exclude_dict_fields_list = override_exclude_dict_fields or self.exclude_dict_fields
+
         for relationship in self.__mapper__.relationships:
             rel = relationship.key
-            if rel not in self.exclude_dict_fields and relationship.entity.class_ not in models_hit:
+            if rel not in exclude_dict_fields_list and relationship.entity.class_ not in models_hit:
                 rel_map = getattr(self, rel)
                 if isinstance(rel_map, InstrumentedList):
                     fields[rel] = [self._dict_or_collapsed(el, models_hit) for el in rel_map]
@@ -34,12 +36,13 @@ class Dictable(object):
 
         return fields
 
-    def as_dict(self, include_pk=True):
-        return self._as_dict_recur([self.__class__], include_pk)
+    def as_dict(self, include_pk=True, override_exclude_dict_fields=[]):
+        return self._as_dict_recur([self.__class__], include_pk, override_exclude_dict_fields)
 
     @staticmethod
     def _dict_or_collapsed(obj, models_hit=[]):
         if obj.dict_collapse:
-            return obj._as_dict_recur(models_hit=models_hit, include_pk=False).popitem()[1]
+            return next((v for k, v in obj._as_dict_recur(models_hit=models_hit, include_pk=False).items() if
+                         k not in obj.exclude_dict_fields), None)
         else:
             return obj._as_dict_recur(models_hit=models_hit, include_pk=obj.dict_carry_pk)

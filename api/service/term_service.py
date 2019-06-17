@@ -1,3 +1,4 @@
+from api.model import QuestionCategory
 from api.model.term import Term
 from api.utils.helpers import sort_and_paginate
 
@@ -14,7 +15,8 @@ def get_single_term(term_id):
 def get_single_term_categories(term_id):
     term_result = Term.query.get(term_id)
     if term_result:
-        result = [c.as_dict() for c in term_result.categories]
+        fields_exclude_override = [field for field in QuestionCategory.exclude_dict_fields if field != 'answers']
+        result = [c.as_dict(override_exclude_dict_fields=fields_exclude_override) for c in term_result.categories]
     else:
         result = []
     return result

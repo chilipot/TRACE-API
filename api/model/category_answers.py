@@ -3,8 +3,8 @@ from sqlalchemy import Column, Integer, ForeignKey
 from api.model.mixins import Base, Dictable
 
 
-class TermCategories(Base, Dictable):
-    __tablename__ = 'term_categories'
+class CategoryAnswers(Base, Dictable):
+    __tablename__ = 'category_answers'
 
-    term_id = Column(Integer, ForeignKey('term.id'), primary_key=True, nullable=False)
+    lookup_answer_id = Column(Integer, ForeignKey('lookup_answer.id'), primary_key=True, nullable=False)
     category_id = Column(Integer, ForeignKey('question_category.id'), primary_key=True, nullable=False)
