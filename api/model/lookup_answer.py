@@ -9,7 +9,7 @@ class LookupAnswer(Base, Dictable):
 
     exclude_dict_fields = ["categories"]
 
-    dict_collapse = True
+    # dict_collapse = True
 
     id = Column(Integer, primary_key=True)
     text = Column(Unicode(500))
