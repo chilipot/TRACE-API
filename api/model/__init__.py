@@ -11,3 +11,4 @@ from api.model.course import Course
 from api.model.score_data import ScoreData
 from api.model.term_categories import TermCategories
 from api.model.category_answers import CategoryAnswers
+from api.model.response import Response

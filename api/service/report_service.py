@@ -1,5 +1,9 @@
-from api.model import Course, ScoreData, Term, Instructor, Comment, Department
-from api.utils.helpers import sort_and_paginate, apply_sql_facets
+import flask
+from sqlalchemy.orm import load_only
+
+from api import db_session
+from api.model import Course, ScoreData, Term, Instructor, Comment, Department, Response
+from api.utils.helpers import sort_and_paginate, apply_sql_facets, get_or_abort
 
 
 def get_all_courses(page, page_size, order_by, facets={}):
@@ -37,3 +41,18 @@ def get_single_report(report_id):
         return result
     else:
         return None
+
+
+def save_user_report_response(report_id, user_id, response_data):
+    get_or_abort(Course, report_id)
+
+    response_entries = []
+    for q_id, ans_id in response_data.items():
+        response_entries.append(Response(user_id, report_id, q_id, ans_id))
+    try:
+        if response_entries:
+            db_session.add_all(response_entries)
+            db_session.commit()
+    except Exception:
+        db_session.rollback()
+        raise
