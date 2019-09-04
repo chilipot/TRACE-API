@@ -1,5 +1,5 @@
 ## 0.3.0
-* (feature) search question categories
+* (feature) search questions/answers for category
 * (feature) submitting review for a course report
 * (patch) minor improvements to API + fortification of Flask architecture
 
