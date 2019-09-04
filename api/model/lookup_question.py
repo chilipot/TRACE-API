@@ -12,4 +12,4 @@ class LookupQuestion(Base, Dictable):
     text = Column(Unicode(500))
     category_id = Column(Integer, ForeignKey('question_category.id'), nullable=False)
 
-    category = relationship('QuestionCategory', lazy='joined')
+    category = relationship('QuestionCategory', back_populates='questions', lazy='joined')

@@ -10,4 +10,6 @@ def get_all_questions(page, page_size, order_by, facets={}):
 
 
 def get_all_categories(page, page_size, order_by):
-    return [c.as_dict() for c in sort_and_paginate(QuestionCategory.query, order_by, page, page_size).all()]
+    fields_exclude_override = [field for field in QuestionCategory.exclude_dict_fields if field != 'answers']
+    return [c.as_dict(override_exclude_dict_fields=fields_exclude_override) for c in
+            sort_and_paginate(QuestionCategory.query, order_by, page, page_size).all()]

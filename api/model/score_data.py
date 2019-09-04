@@ -15,11 +15,3 @@ class ScoreData(Base, Dictable):
 
     course = relationship('Course', back_populates='score_data', uselist=False)
     questions = relationship('Question', back_populates='score_data')
-
-    # Extra logic for special scores return
-    def as_dict(self, include_pk=True):
-        fields = super(ScoreData, self).as_dict(include_pk)
-        fields['id'] = fields.get('course', {}).get('id')
-        # Make cleaner
-        fields['comments'] = [comment._dict_or_collapsed(comment) for comment in self.course.comments]
-        return fields

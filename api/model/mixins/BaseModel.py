@@ -7,5 +7,4 @@ _Base = declarative_base()
 
 class Base(_Base):
     __abstract__ = True
-
     query = db_session.query_property()
