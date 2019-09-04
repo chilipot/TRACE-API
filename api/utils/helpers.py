@@ -1,4 +1,4 @@
-from flask import json, Response, request
+from flask import json, Response, request, abort
 from sqlalchemy_utils import sort_query
 
 
@@ -32,3 +32,13 @@ def responsify(results):
     elif isinstance(results, list):
         results_obj = {"data": results}
     return Response(json.dumps(results_obj), mimetype='application/json')
+
+
+def get_or_abort(model, object_id, code=404):
+    """
+    get an object with his given id or an abort error (404 is the default)
+    """
+    result = model.query.get(object_id)
+    if result is None:
+        abort(code)
+    return result

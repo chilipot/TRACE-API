@@ -3,7 +3,7 @@ from flask import request
 
 from api.controller import api
 from api.service.report_service import get_all_courses, get_single_course, get_single_report, \
-    search_courses, search_highlights_courses
+    search_courses, search_highlights_courses, save_user_report_response
 from api.utils.constants import DEFAULT_PAGE_SIZE
 from api.utils.helpers import responsify, get_id_facets_from_request
 
@@ -59,3 +59,13 @@ def get_scores(report_id):
     else:
         # Avoiding jsonify because it can be slow
         return responsify(report), 200
+
+
+@api.route('course/<int:report_id>/response/<int:user_id>', methods=['POST'])
+def save_user_response(report_id, user_id):
+    """
+    Saves a report response for a specific user
+    """
+    response_data = request.get_json() or {}
+    save_user_report_response(report_id, user_id, response_data)
+    return responsify({'status': 'success'}), 200
